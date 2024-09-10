@@ -69,12 +69,12 @@
 
 <main>
   <h1>Fitness Journal</h1>
-  <p class="header">Daily Tracking</p>
+  <p class="header">DAILY TRACKING</p>
 
   <div class="row">
     <div class="component">
       <p class="component_header"> Workout Log </p>
-      <p class="component_text"> Workout Type </p>
+      <p class="component_subheader"> Workout Type </p>
       <label class="component_text checkbox_spacing">
         <input type="checkbox" bind:checked={isWeightLift} on:click={()=>toggleWorkout("weights")}> Weight Lifting
         <input type="checkbox" bind:checked={isRun} on:click={()=>toggleWorkout("run")}> Running
@@ -97,13 +97,13 @@
           <br>
           Sets: <input type="number" class="number_box" bind:value={numSets} min="0" max="100" />
           <br>
-          Weight: <input type="number" class="number_box" bind:value={weightVal} min="0" max="1000" />
+          Weight (lbs): <input type="number" class="number_box" bind:value={weightVal} min="0" max="1000" />
         </label>
         <br>
         <button class="general_button">Submit</button>
       </div>
       {/if}
-      <p class="component_text"> Duration in Minutes </p>
+      <p class="component_subheader"> Duration in Minutes </p>
       <input type="number" class="number_box" bind:value={workoutDuration} min="0" max="180" />
 	    <input type="range" bind:value={workoutDuration} min="0" max="180" />
       <br>
@@ -114,8 +114,8 @@
       <p class="component_header"> Water Log </p>
       <img src={waterLogo} alt="Water Bottle">
       <br>
-      <label class="center component_text">
-        Input Water in ML: <input type="number" class="number_box" bind:value={waterAmount} min="0" max="10000" />
+      <label class="center component_subheader">
+        Input Water (mL): <input type="number" class="number_box" bind:value={waterAmount} min="0" max="10000" />
         <input type="range" bind:value={waterAmount} min="0" max="10000" />
       </label>
     </div>
@@ -124,14 +124,14 @@
       <p class="component_header"> Step Counter </p>
       <img src={walkingLogo} alt="Walking">
       <br>
-      <label class="center component_text">
+      <label class="center component_subheader">
         Input Steps: <input type="number" class="number_box" bind:value={stepAmount} min="0" max="10000" />
         <input type="range" bind:value={stepAmount} min="0" max="40000" />
       </label>
     </div>
   </div>  
 
-  <p class="header">Progress Tracking</p>
+  <p class="header">PROGRESS TRACKING</p>
 
   <div class="row">
     <div class="component">
@@ -143,7 +143,7 @@
     </div>
 
     <div class="component">
-      <p class="component_header"> Progress Photos </p>
+      <p class="component_header"> Past Workouts </p>
     </div>
   </div>  
 </main>
