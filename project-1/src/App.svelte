@@ -1,5 +1,6 @@
 <script>
   // Next thing to do: Make charts for the Workout Stats section comparing the different elements of the workouts
+  // https://svelte.dev/examples/area-chart
 
    import waterLogo from './svg/water.svg'
    import walkingLogo from './svg/walking.svg'
