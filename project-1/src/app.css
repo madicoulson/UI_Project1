@@ -55,6 +55,20 @@ canvas {
   right: 10px;
 }
 
+.component_button_top {
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-size: 14px;
+  padding: 6px 12px 6px 12px;
+  margin-top: 10px;
+  background-color:rgb(52, 76, 98);
+  color: white;
+  border-radius: 16px;
+  width:fit-content;
+  position:absolute;
+  top: 72px;
+  right: 10px;
+}
+
 .general_button {
   font-family: Verdana, Geneva, Tahoma, sans-serif;
   font-size: 14px;

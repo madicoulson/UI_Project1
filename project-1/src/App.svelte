@@ -7,8 +7,13 @@
   import { Chart } from 'chart.js/auto';
   import { onMount } from "svelte";
 
-  // Dummy date for a sample inputs
+  //***************************** GLOBAL VARIABLES *****************************//
+  
+  // Dummy data for sample inputs
   let dataPool = [
+    {date:'09/03/2024', workout: {"type":"Weight Lifting","duration":60,"lift":[{"exercise":"Bench Press","sets":4,"weight":75},
+          {"exercise":"Tricep Dips","sets":4,"weight":30},{"exercise":"Chest Press","sets":4,"weight":40},
+          {"exercise":"Curls","sets":4,"weight":12}]}, water:1000, steps:8976},
     {date:'09/04/2024', workout: {type:"Running", distance:3, duration:30}, water:1000, steps:8976},
     {date:'09/05/2024', workout: {type:"Yoga / Pilates", duration:60}, water:1000, steps:6754},
     {date:'09/06/2024', workout: {type:"Running",distance:5,duration:50}, water:1000, steps:10789},
@@ -18,11 +23,18 @@
     {date:'09/10/2024', workout: {type:"Running",distance:2,duration:20}, water:1000, steps:7654}
   ]
 
-  // Global variable definitions
+  // Defined current day data to append to through interaction in the components
+  let currentDay = {date:'', workout: {type:"", duration:null}, water:null, steps:null};
+
+  // Chart definitions for within Tracking Stats component
   let durationChart;
   let stepChart;
   let chart1, chart2;
+
+  // Current Date/Time Variable used in header display
   let currentDateTime = new Date().toLocaleString();
+  
+  // Binded values within Workout Log component
   let workoutDuration = 0;
   let isRun = false;
   let isYoga = false;
@@ -31,14 +43,31 @@
   let isSwim = false;
   let isOther = false;
   let workoutDistance = 0;
+  let exerciseName = "";
   let numSets = 0;
   let weightVal = 0;
+  
+  // Binded value within Water Log component
   let waterAmount = 0;
+
+  // Binded value within Step Counter component
   let stepAmount = 0;
-  let exerciseName = "";
-  let currentDay = {date:'', workout: {type:"", duration:null}, water:null, steps:null};
+
+  // Binded and helper values within Past Workouts component
   let clickCount = 0;
+  let firstRunComplete = false;
+  let selectedWorkoutType = dataPool[clickCount].workout.type;
+  let selectedWorkoutDuration = dataPool[clickCount].workout.duration;
+  let selectedWorkoutDistance = dataPool[clickCount].workout.distance;
   let workoutDisplay = JSON.stringify(dataPool[0].workout);
+  let workoutDate = dataPool[0].date;
+  let editWorkout = false;
+  let newWorkoutType = "";
+  let newWorkoutDuration = null;
+  let newWorkoutDistance = null;
+
+
+  //***************************** FUNCTIONS *****************************//
 
   function renderGraphs() {
     // Prepare the labels (dates) and dataset (durations) for the chart
@@ -128,6 +157,7 @@
   
   onMount(()=> {
     renderGraphs();
+    displayPastWorkouts();
   })
 
   // Function to toggle between workouts to ensure only one workout is selected at a time. 
@@ -188,6 +218,11 @@
     }
   }
 
+  function toggleEditWorkout() {
+    if (editWorkout) {editWorkout = false;}
+    else {editWorkout = true;}
+  }
+
   function addWater (inputWater) {
     currentDay.water = parseInt(inputWater);
     appendCurrentDay();
@@ -226,7 +261,12 @@
 
   // Here want to add so it spits out a summary of your workout
   function submitWorkoutData () {
-    appendCurrentDay();
+    if (currentDay.workout.type === "" || currentDay.workout.duration === null || currentDay.workout.duration === 0) {
+      alert("Please insert a workout type and duration before submitting.")
+    }
+    else {appendCurrentDay();} 
+    let check = JSON.stringify(currentDay.workout);
+    alert(check);  
   }
 
   // Function to get the current date and return it as a string formed as MM/DD/YYYY
@@ -270,15 +310,51 @@
     renderGraphs();
   }
 
-  function displayPastWorkouts () {
-    clickCount++;
+  function displayPastWorkouts (noCountIncrease = false) {
+    if (firstRunComplete === true && noCountIncrease === false) {
+      clickCount++;
+    }
     if (clickCount >= dataPool.length) { 
       clickCount = 0;
     }
-    workoutDisplay = JSON.stringify(dataPool[clickCount].workout);
+
+    selectedWorkoutType = dataPool[clickCount].workout.type;
+    selectedWorkoutDuration = dataPool[clickCount].workout.duration;
+    selectedWorkoutDistance = dataPool[clickCount].workout.distance;
+
+    let durationString = JSON.stringify(dataPool[clickCount].workout.duration);
+    workoutDate = dataPool[clickCount].date;
+    workoutDisplay = "Workout Type: " + dataPool[clickCount].workout.type + "<br>" + "Duration: " + durationString + " minutes <br>";
+
+    if (dataPool[clickCount].workout.distance !== undefined){
+      let distanceString = JSON.stringify(dataPool[clickCount].workout.distance);
+      workoutDisplay += "Distance: " + distanceString + " miles";
+    }
+    if (dataPool[clickCount].workout.lift !== undefined){
+      let workoutData = dataPool[clickCount].workout.lift;   
+      for (let i = 0; i < workoutData.length; i++) {
+        workoutDisplay += "<br>" + "Exercise: " + workoutData[i].exercise + "<br>" + "Sets: " + JSON.stringify(workoutData[i].sets) + "<br>" + "Weight: " + JSON.stringify(workoutData[i].weight) + " lbs <br>";
+      }
+    }
+    firstRunComplete = true;
   }
 
+  function updateWorkout(type, duration, distance) 
+  {
+    if (type != "") {dataPool[clickCount].workout.type = type;}
 
+    if (duration != null) {dataPool[clickCount].workout.duration = duration;}
+    if (distance != null) {dataPool[clickCount].workout.distance = distance;}
+  
+    // Refresh the display
+    displayPastWorkouts(true);
+
+    renderGraphs();
+
+    newWorkoutType = "";
+    newWorkoutDuration = null;
+    newWorkoutDistance = null;
+  }
 
 
 </script>
@@ -364,8 +440,33 @@
 
     <div class="component">
       <p class="component_header"> Past Workouts </p>
-      <p class="component_text"> Past Workout: {workoutDisplay} </p>
+      <p class="component_subheader">Past Workout: {workoutDate}</p>
+      {#if editWorkout}
+
+        <button class="component_button_top" on:click={()=>toggleEditWorkout()}>Cancel</button>
+        <label class="component_text">Workout Type:
+          <input type="text" placeholder={selectedWorkoutType} bind:value={newWorkoutType}>
+        </label>
+        <br>
+        <label class="component_text"> Duration:
+          <input type="number" placeholder={selectedWorkoutDuration.toLocaleString()} bind:value={newWorkoutDuration}>
+        </label>
+
+        <br>
+        {#if selectedWorkoutDistance !== undefined}
+        <label class="component_text"> Distance:
+          <input type="number" placeholder={selectedWorkoutDistance.toLocaleString()} bind:value={newWorkoutDistance}>
+        </label>
+        {/if}
+
+        <button class="component_button" on:click={()=>updateWorkout(newWorkoutType, newWorkoutDuration, newWorkoutDistance)} on:click={()=>toggleEditWorkout()}> Submit Changes </button>
+
+
+      {:else}
+      <button class="component_button_top" on:click={()=>toggleEditWorkout()}>Edit Workout</button>
+      <p class="component_text"> {@html workoutDisplay} </p>
       <button class="component_button" on:click={()=> displayPastWorkouts()}> Next Workout > </button>
+      {/if}
     </div>
   </div>  
 </main>
