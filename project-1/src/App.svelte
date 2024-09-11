@@ -1,11 +1,27 @@
 <script>
-  // Next thing to do: Make charts for the Workout Stats section comparing the different elements of the workouts
   // https://svelte.dev/examples/area-chart
+  // https://dev.to/wesleymutwiri/create-beautiful-charts-with-svelte-and-chart-js-512n
 
-   import waterLogo from './svg/water.svg'
-   import walkingLogo from './svg/walking.svg'
-  
-   // Global variable definitions
+  import waterLogo from './svg/water.svg'
+  import walkingLogo from './svg/walking.svg'
+  import { Chart } from 'chart.js/auto';
+  import { onMount } from "svelte";
+
+  // Dummy date for a sample inputs
+  let dataPool = [
+    {date:'09/04/2024', workout: {type:"Running", distance:3, duration:30}, water:1000, steps:8976},
+    {date:'09/05/2024', workout: {type:"Yoga / Pilates", duration:60}, water:1000, steps:6754},
+    {date:'09/06/2024', workout: {type:"Running",distance:5,duration:50}, water:1000, steps:10789},
+    {date:'09/07/2024', workout: {type:"Yoga / Pilates",duration:45}, water:1000, steps:11290},
+    {date:'09/08/2024', workout: {type:"Running",distance:1,duration:10}, water:1000, steps:8900},
+    {date:'09/09/2024', workout: {type:"Yoga / Pilates",duration:55}, water:1100, steps:9876},
+    {date:'09/10/2024', workout: {type:"Running",distance:2,duration:20}, water:1000, steps:7654}
+  ]
+
+  // Global variable definitions
+  let durationChart;
+  let stepChart;
+  let chart1, chart2;
   let currentDateTime = new Date().toLocaleString();
   let workoutDuration = 0;
   let isRun = false;
@@ -21,12 +37,98 @@
   let stepAmount = 0;
   let exerciseName = "";
   let currentDay = {date:'', workout: {type:"", duration:null}, water:null, steps:null};
+  let clickCount = 0;
+  let workoutDisplay = JSON.stringify(dataPool[0].workout);
 
-  // Dummy date for a sample inputs
-  let dataPool = [
-    {date:'09/08/2024', workout: {type:"Running",distance:1,duration:10}, water:1000, steps:10789},
-    {date:'09/09/2024', workout: {type:"Yoga / Pilates",duration:45}, water:1100, steps:9876}
-  ]
+  function renderGraphs() {
+    // Prepare the labels (dates) and dataset (durations) for the chart
+    let dateLabels = dataPool.map(entry => entry.date);
+    const durations = dataPool.map(entry => entry.workout.duration);
+    const steps = dataPool.map(entry=> entry.steps);
+
+    const durationData = {
+        labels: dateLabels,
+        datasets: [
+            {
+                label: 'Workout Durations',
+                data: durations,
+                backgroundColor: ['#7000e1', '#fc8800', '#00b0e8'],
+                fill: false
+            }
+        ]
+    };
+
+    const dataSteps = {
+        labels: dateLabels,
+        datasets: [
+            {
+                label: 'Step Count',
+                data: steps,
+                backgroundColor: ['#7000e1', '#fc8800', '#00b0e8'],
+                fill: false
+            }
+        ]
+    };
+
+    // Destroy existing charts if they exist
+    if (chart1) chart1.destroy();
+    if (chart2) chart2.destroy();
+
+    const ctx = durationChart.getContext('2d');
+    // Initialize chart using default config set
+    chart1 = new Chart(ctx, {
+      type: 'line',
+      data: durationData,
+      options: {
+        maintainAspectRatio: false,
+        responsive: true,
+        scales: {
+          x: {
+            title: {
+              text: 'Date',
+              display: true
+            }
+          },
+          y : {
+            title: {
+              text: 'Duration in Minutes',
+              display: true
+            },
+            beginAtZero:true
+          }
+        }
+      }
+    });
+    const ctx2 = stepChart.getContext('2d');
+    // Initialize chart using default config set
+    chart2 = new Chart(ctx2, {
+      type: 'line',
+      data: dataSteps,
+      options: {
+        maintainAspectRatio: false,
+        responsive: true,
+        scales: {
+          x: {
+            title: {
+              text: 'Date',
+              display: true
+            }
+          },
+          y : {
+            title: {
+              text: 'Step Count',
+              display: true
+            },
+            beginAtZero:true
+          }
+        }
+      }
+    });
+  }
+  
+  onMount(()=> {
+    renderGraphs();
+  })
 
   // Function to toggle between workouts to ensure only one workout is selected at a time. 
   function toggleWorkout(workout) {
@@ -163,7 +265,20 @@
     else {
       dataPool.push(currentDay);
     }
+
+    // Update the rendered graphs with the new data.
+    renderGraphs();
   }
+
+  function displayPastWorkouts () {
+    clickCount++;
+    if (clickCount >= dataPool.length) { 
+      clickCount = 0;
+    }
+    workoutDisplay = JSON.stringify(dataPool[clickCount].workout);
+  }
+
+
 
 
 </script>
@@ -242,11 +357,15 @@
     </div>
 
     <div class="component">
-      <p class="component_header"> Workout Stats </p>
+      <p class="component_header"> Tracking Stats </p>
+      <canvas bind:this={durationChart}></canvas>
+      <canvas bind:this={stepChart}></canvas>
     </div>
 
     <div class="component">
       <p class="component_header"> Past Workouts </p>
+      <p class="component_text"> Past Workout: {workoutDisplay} </p>
+      <button class="component_button" on:click={()=> displayPastWorkouts()}> Next Workout > </button>
     </div>
   </div>  
 </main>
