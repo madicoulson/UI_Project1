@@ -1,0 +1,257 @@
+<script>
+    import {appendCurrentDay, dataPool, currentDay} from './script'
+    import { Chart } from 'chart.js/auto';
+    import { onMount } from "svelte";
+
+ // Chart definitions for within Tracking Stats component
+let durationChart;
+let stepChart;
+ let chart1, chart2;
+ 
+
+ // Binded values for goals
+ let totalStepCount = 0;
+ let goalStepCount = 100000;
+ let goalStepGraph;
+ let goalGraph1;
+
+  // Binded and helper values within Past Workouts component
+  let clickCount = 0;
+  let firstRunComplete = false;
+  let selectedWorkoutType = dataPool[clickCount].workout.type;
+  let selectedWorkoutDuration = dataPool[clickCount].workout.duration;
+  let selectedWorkoutDistance = dataPool[clickCount].workout.distance;
+  let workoutDisplay = JSON.stringify(dataPool[0].workout);
+  let workoutDate = dataPool[0].date;
+  let editWorkout = false;
+  let newWorkoutType = "";
+  let newWorkoutDuration = null;
+  let newWorkoutDistance = null;
+
+  onMount(()=> {
+    renderGraphs();
+    displayPastWorkouts();
+    renderGoals();
+  })
+
+ export function renderGraphs() {
+    // Prepare the labels (dates) and dataset (durations) for the chart
+    let dateLabels = dataPool.map(entry => entry.date);
+    const durations = dataPool.map(entry => entry.workout.duration);
+    const steps = dataPool.map(entry=> entry.steps);
+
+    const durationData = {
+        labels: dateLabels,
+        datasets: [
+            {
+                label: 'Workout Durations',
+                data: durations,
+                backgroundColor: ['#7000e1', '#fc8800', '#00b0e8'],
+                fill: false
+            }
+        ]
+    };
+
+    const dataSteps = {
+        labels: dateLabels,
+        datasets: [
+            {
+                label: 'Step Count',
+                data: steps,
+                backgroundColor: ['#7000e1', '#fc8800', '#00b0e8'],
+                fill: false
+            }
+        ]
+    };
+
+    // Destroy existing charts if they exist
+    if (chart1) chart1.destroy();
+    if (chart2) chart2.destroy();
+
+    const ctx = durationChart.getContext('2d');
+    // Initialize chart using default config set
+    chart1 = new Chart(ctx, {
+      type: 'line',
+      data: durationData,
+      options: {
+        maintainAspectRatio: false,
+        responsive: true,
+        scales: {
+          x: {
+            title: {
+              text: 'Date',
+              display: true
+            }
+          },
+          y : {
+            title: {
+              text: 'Duration in Minutes',
+              display: true
+            },
+            beginAtZero:true
+          }
+        }
+      }
+    });
+    const ctx2 = stepChart.getContext('2d');
+    // Initialize chart using default config set
+    chart2 = new Chart(ctx2, {
+      type: 'line',
+      data: dataSteps,
+      options: {
+        maintainAspectRatio: false,
+        responsive: true,
+        scales: {
+          x: {
+            title: {
+              text: 'Date',
+              display: true
+            }
+          },
+          y : {
+            title: {
+              text: 'Step Count',
+              display: true
+            },
+            beginAtZero:true
+          }
+        }
+      }
+    });
+  }
+
+function renderGoals () {
+    calculateSteps();
+    const stepData = {
+        labels: ['Steps Taken', 'Steps to Go'],
+        datasets: [
+            {
+                data: [totalStepCount, goalStepCount-totalStepCount],
+                backgroundColor: ['#7000e1', '#fc8800'],
+            }
+        ]
+    };
+
+    // Destroy existing charts if they exist
+    if (goalGraph1) goalGraph1.destroy();
+
+    const ctx = goalStepGraph.getContext('2d');
+    goalGraph1= new Chart(ctx, {
+      type: 'pie',
+      data: stepData,
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            position: 'top',
+          },
+          title: {
+            display: true,
+            text: 'Step Goal: 100,000'
+          }
+        }
+      },
+    });
+  }
+
+  function calculateSteps(){
+    totalStepCount = 0;
+    for (let i = 0; i < dataPool.length; i++) {
+      totalStepCount += dataPool[i].steps;
+    }
+  }
+
+  function displayPastWorkouts (noCountIncrease = false) {
+    if (firstRunComplete === true && noCountIncrease === false) {
+      clickCount++;
+    }
+    if (clickCount >= dataPool.length) { 
+      clickCount = 0;
+    }
+
+    selectedWorkoutType = dataPool[clickCount].workout.type;
+    selectedWorkoutDuration = dataPool[clickCount].workout.duration;
+    selectedWorkoutDistance = dataPool[clickCount].workout.distance;
+
+    let durationString = JSON.stringify(dataPool[clickCount].workout.duration);
+    workoutDate = dataPool[clickCount].date;
+    workoutDisplay = "Workout Type: " + dataPool[clickCount].workout.type + "<br>" + "Duration: " + durationString + " minutes <br>";
+
+    if (dataPool[clickCount].workout.distance !== undefined){
+      let distanceString = JSON.stringify(dataPool[clickCount].workout.distance);
+      workoutDisplay += "Distance: " + distanceString + " miles";
+    }
+    if (dataPool[clickCount].workout.lift !== undefined){
+      let workoutData = dataPool[clickCount].workout.lift;   
+      for (let i = 0; i < workoutData.length; i++) {
+        workoutDisplay += "<br>" + "Exercise: " + workoutData[i].exercise + "<br>" + "Sets: " + JSON.stringify(workoutData[i].sets) + "<br>" + "Weight: " + JSON.stringify(workoutData[i].weight) + " lbs <br>";
+      }
+    }
+    firstRunComplete = true;
+  }
+
+  function updateWorkout(type, duration, distance) 
+  {
+    if (type != "") {dataPool[clickCount].workout.type = type;}
+
+    if (duration != null) {dataPool[clickCount].workout.duration = duration;}
+    if (distance != null) {dataPool[clickCount].workout.distance = distance;}
+  
+    // Refresh the display
+    displayPastWorkouts(true);
+
+    renderGraphs();
+
+    newWorkoutType = "";
+    newWorkoutDuration = null;
+    newWorkoutDistance = null;
+  }
+
+  function toggleEditWorkout() {
+    if (editWorkout) {editWorkout = false;}
+    else {editWorkout = true;}
+  }
+</script>
+
+
+<div class="component">
+    <p class="component_header"> Current Goals </p>
+    <canvas bind:this={goalStepGraph}></canvas>
+  </div>
+
+  <div class="component">
+    <p class="component_header"> Tracking Stats </p>
+    <canvas bind:this={durationChart}></canvas>
+    <canvas bind:this={stepChart}></canvas>
+  </div>
+
+  <div class="component">
+    <p class="component_header"> Past Workouts </p>
+    <p class="component_subheader">Past Workout: {workoutDate}</p>
+    {#if editWorkout}
+
+      <button class="component_button_top" on:click={()=>toggleEditWorkout()}>Cancel</button>
+      <label class="component_text">Workout Type:
+        <input type="text" placeholder={selectedWorkoutType} bind:value={newWorkoutType}>
+      </label>
+      <br>
+      <label class="component_text"> Duration:
+        <input type="number" placeholder={selectedWorkoutDuration.toLocaleString()} bind:value={newWorkoutDuration}>
+      </label>
+
+      <br>
+      {#if selectedWorkoutDistance !== undefined}
+      <label class="component_text"> Distance:
+        <input type="number" placeholder={selectedWorkoutDistance.toLocaleString()} bind:value={newWorkoutDistance}>
+      </label>
+      {/if}
+
+      <button class="component_button" on:click={()=>updateWorkout(newWorkoutType, newWorkoutDuration, newWorkoutDistance)} on:click={()=>toggleEditWorkout()}> Submit Changes </button>
+
+
+    {:else}
+    <button class="component_button_top" on:click={()=>toggleEditWorkout()}>Edit Workout</button>
+    <p class="component_text"> {@html workoutDisplay} </p>
+    <button class="component_button" on:click={()=> displayPastWorkouts()}> Next Workout > </button>
+    {/if}
+  </div>
