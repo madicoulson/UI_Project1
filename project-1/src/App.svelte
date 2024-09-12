@@ -1,11 +1,16 @@
 <script>
   // https://svelte.dev/examples/area-chart
   // https://dev.to/wesleymutwiri/create-beautiful-charts-with-svelte-and-chart-js-512n
+  // https://www.chartjs.org/docs/latest/samples/other-charts/pie.html
+  // https://www.w3schools.com/ai/ai_chartjs.asp
+  // https://www.educative.io/answers/how-to-create-charts-with-svelte-and-chartjs
+
 
   import waterLogo from './svg/water.svg'
   import walkingLogo from './svg/walking.svg'
   import { Chart } from 'chart.js/auto';
   import { onMount } from "svelte";
+  import Header from './lib/Header.svelte'
 
   //***************************** GLOBAL VARIABLES *****************************//
   
@@ -65,6 +70,12 @@
   let newWorkoutType = "";
   let newWorkoutDuration = null;
   let newWorkoutDistance = null;
+
+  // Binded values for goals
+  let totalStepCount = 0;
+  let goalStepCount = 100000;
+  let goalStepGraph;
+  let goalGraph1;
 
 
   //***************************** FUNCTIONS *****************************//
@@ -154,10 +165,45 @@
       }
     });
   }
+
+  function renderGoals () {
+    calculateSteps();
+    const stepData = {
+        labels: ['Steps Taken', 'Steps to Go'],
+        datasets: [
+            {
+                data: [totalStepCount, goalStepCount-totalStepCount],
+                backgroundColor: ['#7000e1', '#fc8800'],
+            }
+        ]
+    };
+
+    // Destroy existing charts if they exist
+    if (goalGraph1) goalGraph1.destroy();
+
+    const ctx = goalStepGraph.getContext('2d');
+    goalGraph1= new Chart(ctx, {
+      type: 'pie',
+      data: stepData,
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            position: 'top',
+          },
+          title: {
+            display: true,
+            text: 'Step Goal: 100,000'
+          }
+        }
+      },
+    });
+  }
   
   onMount(()=> {
     renderGraphs();
     displayPastWorkouts();
+    renderGoals();
   })
 
   // Function to toggle between workouts to ensure only one workout is selected at a time. 
@@ -306,8 +352,9 @@
       dataPool.push(currentDay);
     }
 
-    // Update the rendered graphs with the new data.
+    // Update the rendered graphs and goals with the new data.
     renderGraphs();
+    renderGoals();
   }
 
   function displayPastWorkouts (noCountIncrease = false) {
@@ -354,6 +401,13 @@
     newWorkoutType = "";
     newWorkoutDuration = null;
     newWorkoutDistance = null;
+  }
+
+  function calculateSteps(){
+    totalStepCount = 0;
+    for (let i = 0; i < dataPool.length; i++) {
+      totalStepCount += dataPool[i].steps;
+    }
   }
 
 
@@ -430,6 +484,7 @@
   <div class="row">
     <div class="component">
       <p class="component_header"> Current Goals </p>
+      <canvas bind:this={goalStepGraph}></canvas>
     </div>
 
     <div class="component">
