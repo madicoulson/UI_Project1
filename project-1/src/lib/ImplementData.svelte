@@ -1,5 +1,7 @@
 <script>
     import {appendCurrentDay, dataPool, currentDay} from './script'
+    import waterSVG from './water.svg'
+    import stepSVG from './walking.svg'
     
     // Binded values within Workout Log component
     let workoutDuration = 0;
@@ -167,6 +169,7 @@
 
 <implementData>
     <p class="component_header"> Water Log </p>
+    <img src={waterSVG} alt="Water Bottle">
     <br>
     <label class="center component_subheader">
       Input Water (mL): <input type="number" class="number_box" bind:value={waterAmount} min="0" max="10000" on:change={()=>addWater(waterAmount)} />
@@ -176,6 +179,7 @@
 
 <implementData>
     <p class="component_header"> Step Counter </p>
+    <img src={stepSVG} alt="Person Walking">
     <br>
     <label class="center component_subheader">
       Input Steps: <input type="number" class="number_box" bind:value={stepAmount} min="0" max="40000" on:change={()=>addSteps(stepAmount)} />
