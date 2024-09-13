@@ -19,11 +19,13 @@
 
     // Binded value within Water Log component
     let waterAmount = 0;
+    let isWaterEntered = false;
 
     // Binded value within Step Counter component
     let stepAmount = 0;
+    let isStepsEntered = false;
 
-    // Function to toggle between workouts to ensure only one workout is selected at a time. 
+  // Function to toggle between workouts to ensure only one workout is selected at a time. 
   function toggleWorkout(workout) {
     if (workout === "run") {
       isRun = true;
@@ -79,6 +81,14 @@
       isOther = true;
       addWorkoutType("Other");
     }
+  }
+
+  function toggleWaterEntered() {
+    isWaterEntered = true;
+  }
+
+  function toggleStepsEntered() {
+    isStepsEntered = true;
   }
 
   function addWorkoutType (inputType) {
@@ -173,9 +183,12 @@
     <img src={waterSVG} alt="Water Bottle">
     <br>
     <label class="center component_subheader">
-      Input Water (mL): <input type="number" class="number_box" bind:value={waterAmount} min="0" max="10000" on:change={()=>addWater(waterAmount)} />
-      <input type="range" bind:value={waterAmount} min="0" max="10000" on:change={()=>addWater(waterAmount)} />
+      Input Water (mL): <input type="number" class="number_box" bind:value={waterAmount} min="0" max="10000" on:change={()=>addWater(waterAmount)}  on:change={()=>toggleWaterEntered()} />
+      <input type="range" bind:value={waterAmount} min="0" max="10000" on:change={()=>addWater(waterAmount)} on:change={()=>toggleWaterEntered()} />
     </label>
+    {#if (isWaterEntered)}
+    <p class="component_text"> The amount of water logged for today is <strong>{waterAmount} mL</strong>. If you would like to change the amount, reenter the value. </p>
+    {/if}
 </implementData>
 
 <implementData>
@@ -183,9 +196,12 @@
     <img src={stepSVG} alt="Person Walking">
     <br>
     <label class="center component_subheader">
-      Input Steps: <input type="number" class="number_box" bind:value={stepAmount} min="0" max="40000" on:change={()=>addSteps(stepAmount)} />
-      <input type="range" bind:value={stepAmount} min="0" max="40000" on:change={()=>addSteps(stepAmount)} />
+      Input Steps: <input type="number" class="number_box" bind:value={stepAmount} min="0" max="40000" on:change={()=>addSteps(stepAmount)} on:change={()=>toggleStepsEntered()} />
+      <input type="range" bind:value={stepAmount} min="0" max="40000" on:change={()=>addSteps(stepAmount)} on:change={()=>toggleStepsEntered()} />
     </label>
+    {#if (isStepsEntered)}
+    <p class="component_text">The amount of steps logged for today is <strong>{stepAmount}</strong>.If you would like to change the amount, reenter the value. </p>
+    {/if}
 </implementData>
 
 <style>

@@ -21,12 +21,17 @@ let stepChart;
   let selectedWorkoutType = dataPool[clickCount].workout.type;
   let selectedWorkoutDuration = dataPool[clickCount].workout.duration;
   let selectedWorkoutDistance = dataPool[clickCount].workout.distance;
+  let selectedWorkoutLift = dataPool[clickCount].workout.lift;
   let workoutDisplay = JSON.stringify(dataPool[0].workout);
   let workoutDate = dataPool[0].date;
   let editWorkout = false;
   let newWorkoutType = "";
   let newWorkoutDuration = null;
   let newWorkoutDistance = null;
+  let newWorkoutExercises = [];
+  let newWorkoutSets = [];
+  let newWorkoutWeights = []
+  let alreadyInitialized = false;
 
   onMount(()=> {
     renderGraphs();
@@ -190,18 +195,23 @@ function renderGoals () {
     firstRunComplete = true;
   }
 
-  function updateWorkout(type, duration, distance) 
+  function updateWorkout(type, duration, distance, liftExercises) 
   {
     if (type != "") {dataPool[clickCount].workout.type = type;}
 
     if (duration != null) {dataPool[clickCount].workout.duration = duration;}
     if (distance != null) {dataPool[clickCount].workout.distance = distance;}
-  
+
+    // LEFT OFF HERE - Need to map everything here!
+    if (liftExercises.length > 0){
+      alert(JSON.stringify(liftExercises));
+    }  
     // Refresh the display
     displayPastWorkouts(true);
 
     renderGraphs();
 
+    // IMPORTANT TO RESET THINGS HERE!
     newWorkoutType = "";
     newWorkoutDuration = null;
     newWorkoutDistance = null;
@@ -212,19 +222,32 @@ function renderGoals () {
     else {editWorkout = true;}
   }
 
-  export function easyFunc() {
-    alert("Function called!");
+  function initializeWorkoutArrays() {
+    if (alreadyInitialized === false) {
+      selectedWorkoutLift.forEach((lift, index) => {
+        newWorkoutExercises[index] = lift.exercise;
+        newWorkoutSets[index] = lift.sets;
+        newWorkoutWeights[index] = lift.weight;
+      })
+    
+      alert(JSON.stringify(newWorkoutExercises));
+      alert(JSON.stringify(newWorkoutSets));
+      alreadyInitialized = true;
+    }
   }
+
 </script>
 
 
 <div class="component">
     <p class="component_header"> Current Goals </p>
+    <button class="component_button_top" on:click={()=>renderGoals()}>Refresh Goals</button>
     <canvas bind:this={goalStepGraph}></canvas>
   </div>
 
   <div class="component">
     <p class="component_header"> Tracking Stats </p>
+    <button class="component_button_top" on:click={()=>renderGraphs()}>Refresh Graphs</button>
     <canvas bind:this={durationChart}></canvas>
     <canvas bind:this={stepChart}></canvas>
   </div>
@@ -250,7 +273,27 @@ function renderGoals () {
       </label>
       {/if}
 
-      <button class="component_button" on:click={()=>updateWorkout(newWorkoutType, newWorkoutDuration, newWorkoutDistance)} on:click={()=>toggleEditWorkout()}> Submit Changes </button>
+      <br>
+      {#if selectedWorkoutLift !== undefined}
+      <p class="component_text"> {JSON.stringify(selectedWorkoutLift)} </p>
+      {#each selectedWorkoutLift as lift, index}
+      <label class="component_text">Exercise:
+        <input type="text" on:click={()=>initializeWorkoutArrays()} placeholder={lift.exercise} bind:value={newWorkoutExercises[index]}>
+      </label>
+      <br>
+      <label class="component_text">Sets:
+        <input type="number" on:click={()=>initializeWorkoutArrays()} placeholder={lift.sets.toLocaleString()} bind:value={newWorkoutSets[index]}>
+      </label>
+      <br>
+      <label class="component_text">Weight:
+        <input type="number" on:click={()=>initializeWorkoutArrays()} placeholder={lift.weight.toLocaleString()} bind:value={newWorkoutWeights[index]}>
+      </label>
+      <br>
+      <br>
+      {/each}
+      {/if}
+
+      <button class="component_button" on:click={()=>updateWorkout(newWorkoutType, newWorkoutDuration, newWorkoutDistance, newWorkoutExercises)} on:click={()=>toggleEditWorkout()}> Submit Changes </button>
 
 
     {:else}

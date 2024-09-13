@@ -40,10 +40,7 @@
     alert(check);
 
     return dataPool;
-
-    // Update the rendered graphs and goals with the new data.
-    //renderGraphs();
-    //renderGoals();
+    
   }
 
   // Function to get the current date and return it as a string formed as MM/DD/YYYY
