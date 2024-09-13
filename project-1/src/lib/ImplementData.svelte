@@ -1,7 +1,8 @@
-<script>
+<script lang="js">
     import {appendCurrentDay, dataPool, currentDay} from './script'
     import waterSVG from './water.svg'
     import stepSVG from './walking.svg'
+    //import {easyFunc} from './ProgressTracking.svelte'
     
     // Binded values within Workout Log component
     let workoutDuration = 0;

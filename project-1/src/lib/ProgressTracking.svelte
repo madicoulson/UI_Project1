@@ -1,4 +1,4 @@
-<script>
+<script lang="js">
     import {appendCurrentDay, dataPool, currentDay} from './script'
     import { Chart } from 'chart.js/auto';
     import { onMount } from "svelte";
@@ -34,7 +34,7 @@ let stepChart;
     renderGoals();
   })
 
- export function renderGraphs() {
+  function renderGraphs() {
     // Prepare the labels (dates) and dataset (durations) for the chart
     let dateLabels = dataPool.map(entry => entry.date);
     const durations = dataPool.map(entry => entry.workout.duration);
@@ -210,6 +210,10 @@ function renderGoals () {
   function toggleEditWorkout() {
     if (editWorkout) {editWorkout = false;}
     else {editWorkout = true;}
+  }
+
+  export function easyFunc() {
+    alert("Function called!");
   }
 </script>
 
