@@ -17,6 +17,10 @@ import { writable } from 'svelte/store';
   // Writable variable for the length of dataPool
   export let dataPoolLength = writable(dataPool.length);
 
+  // Writeable variable for the date difference
+  export let dateDifference = writable(0);
+
+
   // Defined current day data to append to through interaction in the components
   export let currentDay = {date:'', workout: {type:"", duration:null}, water:null, steps:null};
 
@@ -64,4 +68,18 @@ import { writable } from 'svelte/store';
     // Concatenate the month, day and year together and cast as a string.
     let currentDateString = month + '/' + day + '/' + year;
     return currentDateString;
+  }
+
+  // Function to return the difference between the start date and the end date. 
+  // Work Cited: https://www.geeksforgeeks.org/how-to-calculate-the-number-of-days-between-two-dates-in-javascript/
+  export function daysSinceStart() {
+    let startDate = new Date(dataPool[1].date);
+    let endDate = new Date(getDate());
+
+    let difference = endDate.getTime() - startDate.getTime();
+
+    let differenceDays = Math.round(difference / (1000*3600*24));
+
+    dateDifference.update((num) => differenceDays);
+
   }

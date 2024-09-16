@@ -1,12 +1,19 @@
 <script>
-    import {dataPoolLength} from './script'
+    import {dataPoolLength, dateDifference, daysSinceStart} from './script'
+    import { onMount } from "svelte";
+
+    onMount(()=> {
+      daysSinceStart();
+    })
+
     // Variable to hold current date and time.
     let currentDateTime = new Date().toLocaleString();
     $: reactiveLength = $dataPoolLength;
+    $: reactiveDays = $dateDifference;
 </script>
   
 <header>Fitness Journal
-    <p class="dateTime">{reactiveLength} days active | {currentDateTime}</p>
+    <p class="dateTime"> {reactiveDays} days since start | {reactiveLength} days active | {currentDateTime}</p>
 </header>
 
 <style>
