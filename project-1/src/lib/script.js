@@ -1,5 +1,7 @@
-// Dummy data for sample inputs
- export let dataPool = [
+import { writable } from 'svelte/store';
+
+  // Dummy data for sample inputs
+  export let dataPool = [
     {date:'09/03/2024', workout: {"type":"Weight Lifting","duration":60,"lift":[{"exercise":"Bench Press","sets":4,"weight":75},
           {"exercise":"Tricep Dips","sets":4,"weight":30},{"exercise":"Chest Press","sets":4,"weight":40},
           {"exercise":"Curls","sets":4,"weight":12}]}, water:1000, steps:8976},
@@ -11,6 +13,9 @@
     {date:'09/09/2024', workout: {type:"Yoga / Pilates",duration:55}, water:1100, steps:9876},
     {date:'09/10/2024', workout: {type:"Running",distance:2,duration:20}, water:1000, steps:7654}
   ]
+
+  // Writable variable for the length of dataPool
+  export let dataPoolLength = writable(dataPool.length);
 
   // Defined current day data to append to through interaction in the components
   export let currentDay = {date:'', workout: {type:"", duration:null}, water:null, steps:null};
@@ -38,6 +43,8 @@
 
     let check = JSON.stringify(dataPool);
     alert(check);
+
+    dataPoolLength.update((num) => dataPool.length);
 
     return dataPool;
     
