@@ -30,7 +30,7 @@ let stepChart;
   let newWorkoutDistance = null;
   let newWorkoutExercises = [];
   let newWorkoutSets = [];
-  let newWorkoutWeights = []
+  let newWorkoutWeights = [];
   let alreadyInitialized = false;
 
   onMount(()=> {
@@ -177,6 +177,7 @@ function renderGoals () {
     selectedWorkoutType = dataPool[clickCount].workout.type;
     selectedWorkoutDuration = dataPool[clickCount].workout.duration;
     selectedWorkoutDistance = dataPool[clickCount].workout.distance;
+    selectedWorkoutLift = dataPool[clickCount].workout.lift;
 
     let durationString = JSON.stringify(dataPool[clickCount].workout.duration);
     workoutDate = dataPool[clickCount].date;
@@ -195,17 +196,22 @@ function renderGoals () {
     firstRunComplete = true;
   }
 
-  function updateWorkout(type, duration, distance, liftExercises) 
+  function updateWorkout() 
   {
-    if (type != "") {dataPool[clickCount].workout.type = type;}
+    if (newWorkoutType != "") {dataPool[clickCount].workout.type = newWorkoutType;}
 
-    if (duration != null) {dataPool[clickCount].workout.duration = duration;}
-    if (distance != null) {dataPool[clickCount].workout.distance = distance;}
+    if (newWorkoutDuration != null) {dataPool[clickCount].workout.duration = newWorkoutDuration;}
+    if (newWorkoutDistance != null) {dataPool[clickCount].workout.distance = newWorkoutDistance;}
 
     // LEFT OFF HERE - Need to map everything here!
-    if (liftExercises.length > 0){
-      alert(JSON.stringify(liftExercises));
+    if (newWorkoutExercises.length > 0){
+      selectedWorkoutLift.forEach((lift, index) => {
+        lift.exercise = newWorkoutExercises[index];
+        lift.sets = newWorkoutSets[index];
+        lift.weight = newWorkoutWeights[index];
+      })   
     }  
+
     // Refresh the display
     displayPastWorkouts(true);
 
@@ -215,6 +221,10 @@ function renderGoals () {
     newWorkoutType = "";
     newWorkoutDuration = null;
     newWorkoutDistance = null;
+    alreadyInitialized = false;
+    newWorkoutExercises = [];
+    newWorkoutSets = [];
+    newWorkoutWeights = [];
   }
 
   function toggleEditWorkout() {
@@ -293,7 +303,7 @@ function renderGoals () {
       {/each}
       {/if}
 
-      <button class="component_button" on:click={()=>updateWorkout(newWorkoutType, newWorkoutDuration, newWorkoutDistance, newWorkoutExercises)} on:click={()=>toggleEditWorkout()}> Submit Changes </button>
+      <button class="component_button" on:click={()=>updateWorkout()} on:click={()=>toggleEditWorkout()}> Submit Changes </button>
 
 
     {:else}
