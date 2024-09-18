@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "chart.js": "^4.4.4",
+    "flowbite": "^2.5.1",
     "svelte-split-pane": "^0.1.2"
   }
 }

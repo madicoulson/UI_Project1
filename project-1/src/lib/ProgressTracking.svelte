@@ -11,12 +11,23 @@ let stepChart;
 
   // Binded values for goals
   let totalStepCount = 0;
-  let goalStepCount = 100000;
-  let goalStepGraph;
-  let goalGraph1;
   let isAddGoal = false;
   let goalType = "";
   let workoutGoalType = "";
+  let goalSteps = 100000;
+  let goalStepsPercent = 0;
+  let goalDistance = 0;
+  let isDistanceGoal = false;
+  let isDistanceGoalSubmitted = false;
+  let totalDistance = 0;
+  let goalDistancePercent = 0;
+  let totalDuration = 0;
+  let goalDurationPercent = 0;
+  let goalDuration = 0;
+  let isDurationGoal = false;
+  let isDurationGoalSubmitted = false;
+  let isStepGoalSubmitted = false;
+  let isStepGoal = false;
 
   // Binded and helper values within Past Workouts component
   let clickCount = 0;
@@ -39,7 +50,7 @@ let stepChart;
   onMount(()=> {
     renderGraphs();
     displayPastWorkouts();
-    renderGoals();
+    calculateSteps();
   })
 
   function renderGraphs() {
@@ -128,45 +139,40 @@ let stepChart;
     });
   }
 
-function renderGoals () {
-    calculateSteps();
-    const stepData = {
-        labels: ['Steps Taken', 'Steps to Go'],
-        datasets: [
-            {
-                data: [totalStepCount, goalStepCount-totalStepCount],
-                backgroundColor: ['#7000e1', '#fc8800'],
-            }
-        ]
-    };
-
-    // Destroy existing charts if they exist
-    if (goalGraph1) goalGraph1.destroy();
-
-    const ctx = goalStepGraph.getContext('2d');
-    goalGraph1= new Chart(ctx, {
-      type: 'pie',
-      data: stepData,
-      options: {
-        responsive: true,
-        plugins: {
-          legend: {
-            position: 'top',
-          },
-          title: {
-            display: true,
-            text: 'Step Goal: 100,000'
-          }
-        }
-      },
-    });
-  }
-
   function calculateSteps(){
     totalStepCount = 0;
     for (let i = 0; i < dataPool.length; i++) {
       totalStepCount += dataPool[i].steps;
     }
+    goalStepsPercent = (totalStepCount / goalSteps) * 100;
+    isStepGoalSubmitted = true;
+  }
+
+  function addGoal(){
+    if (isDistanceGoal) {calculateDistance();}
+    if (isDurationGoal) {calculateDuration();}
+    if (isStepGoal) {calculateSteps();}
+    toggleAddGoal();
+
+  }
+
+  function calculateDistance(){
+    totalDistance = 0;
+    for (let i = 0; i < dataPool.length; i++) {
+      if (dataPool[i].workout.distance != null || dataPool[i].workout.distance != undefined)
+        totalDistance += dataPool[i].workout.distance;
+    }
+    goalDistancePercent = (totalDistance / goalDistance) * 100;
+    isDistanceGoalSubmitted = true;
+  }
+
+  function calculateDuration() {
+    totalDuration = 0;
+    for (let i = 0; i < dataPool.length; i++) {
+      totalDuration += dataPool[i].workout.duration;
+    }
+    goalDurationPercent = (totalDuration / goalDuration) * 100;
+    isDurationGoalSubmitted = true;
   }
 
   function displayPastWorkouts (noCountIncrease = false) {
@@ -231,7 +237,7 @@ function renderGoals () {
   }
 
   function toggleEditWorkout() {
-    if (editWorkout) {editWorkout = false; renderGoals();}
+    if (editWorkout) {editWorkout = false;}
     else {editWorkout = true;}
   }
 
@@ -254,6 +260,34 @@ function renderGoals () {
     else {isAddGoal = true;}
   }
 
+  function toggleIsDistance() {
+    if (isDistanceGoal) {isDistanceGoal = false;}
+    else {isDistanceGoal = true;}
+  }
+
+  function toggleIsSteps() {
+    if (isStepGoal) {isStepGoal = false;}
+    else {isStepGoal = true;}
+  }
+
+  function selectGoal() {
+    if (goalType === 'steps') {
+      toggleIsSteps();
+    }
+    if (workoutGoalType === 'distance') {
+      toggleIsDistance();
+    }
+    else if (workoutGoalType === 'duration') {
+      toggleIsDuration();
+    }
+  }
+
+  function toggleIsDuration() {
+    if (isDurationGoal) {isDurationGoal = false;}
+    else {isDurationGoal = true;}
+  }
+
+
 </script>
 
 
@@ -263,9 +297,9 @@ function renderGoals () {
   <br>
   <p class="component_subheader"> All goals entered will be tracked as a running total against all of your entries. </p>
     <button class="component_button_top" on:click={()=>toggleAddGoal()}>Cancel</button>
-    <button class="component_button"> Submit Goal </button>
+    <button class="component_button" on:click={()=>addGoal()}> Submit Goal </button>
     <label for="goal_type" class="component_subheader">Select Goal Type:</label>
-    <select name="goal_type" class="component_text" bind:value={goalType}>
+    <select name="goal_type" class="component_text" bind:value={goalType} on:change={()=>selectGoal()}>
       <option> </option>
       <option value="workout"> Workout </option>
       <option value="water"> Water </option>
@@ -282,14 +316,14 @@ function renderGoals () {
       <br>
       <br>
       <label class="component_subheader">
-        Insert Goal Amount of Steps: <input type="number" class="number_box" min="0" max="100" />
+        Insert Goal Amount of Steps: <input type="number" class="number_box" min="0" max="100" bind:value={goalSteps} />
       </label>
     {/if}
     {#if goalType === "workout"}
       <br>
       <br>
       <label for="workout_goal" class="component_subheader">Select Workout Goal Type:</label>
-      <select name="goal_type" class="component_text" bind:value={workoutGoalType}>
+      <select name="goal_type" class="component_text" bind:value={workoutGoalType} on:change={()=>selectGoal()}>
         <option> </option>
         <option value="distance"> Distance </option>
         <option value="duration"> Duration </option>
@@ -298,21 +332,50 @@ function renderGoals () {
       <br>
       <br>
       <label class="component_subheader">
-        Insert Goal Number of Miles: <input type="number" class="number_box" min="0" max="100" />
+        Insert Goal Number of Miles: <input type="number" class="number_box" min="0" max="100" bind:value={goalDistance} />
       </label>
       {/if}
       {#if workoutGoalType === "duration"}
         <br>
         <br>
         <label class="component_subheader">
-          Insert Goal Number of Minutes: <input type="number" class="number_box" min="0" max="100" />
+          Insert Goal Number of Minutes: <input type="number" class="number_box" min="0" max="100" bind:value={goalDuration} />
         </label>
       {/if}
     {/if}
   {:else}
-    <button class="component_button_top" on:click={()=>renderGoals()}>Refresh Goals</button>
-    <button class="component_button_beneath_top" on:click={()=>toggleAddGoal()}>Add Goal</button>
-    <canvas bind:this={goalStepGraph}></canvas>
+    {#if isStepGoalSubmitted}
+    <button class="component_button_top" on:click={()=>toggleAddGoal()}>Add Goal</button>
+    <p class="component_subheader"> Step Goal: {goalSteps.toLocaleString()} steps </p>
+    <p class="component_text"> Current: {totalStepCount.toLocaleString()} steps </p>
+    <div class="progress_bar">
+      <div class="progress" style="width: {goalStepsPercent}%">
+        <p class=progress_text>{goalStepsPercent}%</p>
+      </div>
+    </div>
+    <br>
+    {/if}
+    {#if isDistanceGoalSubmitted}
+    <p class="component_subheader"> Distance Goal: {goalDistance.toLocaleString()} miles </p>
+    <p class="component_text"> Current: {totalDistance.toLocaleString()} miles </p>
+    <div class="progress_bar">
+      <div class="progress" style="width: {goalDistancePercent}%">
+        <p class=progress_text>{goalDistancePercent}%</p>
+      </div>
+    </div>
+    <br>
+    {/if}
+    {#if isDurationGoalSubmitted}
+    <p class="component_subheader"> Duration Goal: {goalDuration.toLocaleString()} minutes </p>
+    <p class="component_text"> Current: {totalDuration.toLocaleString()} minutes </p>
+    <div class="progress_bar">
+      <div class="progress" style="width: {goalDurationPercent}%">
+        <p class=progress_text>{goalDurationPercent}%</p>
+      </div>
+    </div>
+    <br>
+    {/if}
+
   {/if}
   </div>
 
@@ -403,17 +466,51 @@ function renderGoals () {
     right: 10px;
   }
 
-  .component_button_beneath_top {
-    font-family: Verdana, Geneva, Tahoma, sans-serif;
-    font-size: 14px;
-    padding: 6px 12px 6px 12px;
-    margin-top: 10px;
-    background-color:rgb(52, 76, 98);
-    color: white;
+  .component {
+    background-color: rgb(228, 234, 238);
+    height: 50vh;
+    width: 33vw;
+    max-width: 100%;
+    max-height: 100%;
+    border: rgb(52, 76, 98);
+    border-width: 1.5px;
+    border-style: solid;
+    padding: 10px;
+    margin: 10px;
+    position: relative;
     border-radius: 16px;
-    width:fit-content;
-    position:absolute;
-    top: 120px;
-    right: 10px;
+    overflow:auto;
+  }
+
+  .component_text {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    color: rgb(52, 76, 98);
+    font-size: 20px;
+    font-weight: 400px;
+    padding-top: 0px;
+  }
+
+  .progress_bar {
+    width: 100%;
+    background-color:  rgb(211, 217, 222);
+    height: 30px;
+    border-radius: 5px;
+    margin-top: 10px;
+  }
+
+  .progress {
+    background-color: rgb(52, 76, 98);
+    height: 100%;
+    border-radius: 5px;
+    transition: width 0.5s ease;
+  }
+
+  .progress_text {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    color: white;
+    font-size: 20px;
+    font-weight: 400px;
+    padding-top: 2px;
+    padding-left: 5px;
   }
   </style>
