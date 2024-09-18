@@ -28,6 +28,11 @@ let stepChart;
   let isDurationGoalSubmitted = false;
   let isStepGoalSubmitted = false;
   let isStepGoal = false;
+  let totalWater = 0;
+  let goalWaterPercent = 0;
+  let goalWater = 0;
+  let isWaterGoal = false;
+  let isWaterGoalSubmitted = false;
 
   // Binded and helper values within Past Workouts component
   let clickCount = 0;
@@ -150,8 +155,9 @@ let stepChart;
 
   function addGoal(){
     if (isDistanceGoal) {calculateDistance();}
-    if (isDurationGoal) {calculateDuration();}
-    if (isStepGoal) {calculateSteps();}
+    else if (isDurationGoal) {calculateDuration();}
+    else if (isStepGoal) {calculateSteps();}
+    else if (isWaterGoal) {calculateWater();}
     toggleAddGoal();
 
   }
@@ -173,6 +179,15 @@ let stepChart;
     }
     goalDurationPercent = (totalDuration / goalDuration) * 100;
     isDurationGoalSubmitted = true;
+  }
+
+  function calculateWater() {
+    totalWater = 0;
+    for (let i = 0; i < dataPool.length; i++) {
+      totalWater += dataPool[i].water;
+    }
+    goalWaterPercent = (totalWater / goalWater) * 100;
+    isWaterGoalSubmitted = true;
   }
 
   function displayPastWorkouts (noCountIncrease = false) {
@@ -274,7 +289,10 @@ let stepChart;
     if (goalType === 'steps') {
       toggleIsSteps();
     }
-    if (workoutGoalType === 'distance') {
+    else if (goalType === 'water') {
+      toggleIsWater();
+    }
+    else if (workoutGoalType === 'distance') {
       toggleIsDistance();
     }
     else if (workoutGoalType === 'duration') {
@@ -285,6 +303,18 @@ let stepChart;
   function toggleIsDuration() {
     if (isDurationGoal) {isDurationGoal = false;}
     else {isDurationGoal = true;}
+  }
+
+  function toggleIsWater() {
+    if (isWaterGoal) {isWaterGoal = false;}
+    else {isWaterGoal = true;}
+  }
+
+  function refreshGoals(){
+    if (isDistanceGoalSubmitted) {calculateDistance();}
+    if (isDurationGoalSubmitted) {calculateDuration();}
+    if (isStepGoalSubmitted) {calculateSteps();}
+    if (isWaterGoalSubmitted) {calculateWater();}
   }
 
 
@@ -309,7 +339,7 @@ let stepChart;
       <br>
       <br>
       <label class="component_subheader">
-        Insert Goal Amount of Water in mL: <input type="number" class="number_box" min="0" max="100" />
+        Insert Goal Amount of Water in mL: <input type="number" class="number_box" min="0" max="100" bind:value={goalWater} />
       </label>
     {/if}
     {#if goalType === "steps"}
@@ -344,8 +374,9 @@ let stepChart;
       {/if}
     {/if}
   {:else}
+  <button class="component_button_top" on:click={()=>toggleAddGoal()}>Add Goal</button>
+  <button class="component_button" on:click={()=>refreshGoals()}>Refresh Goals</button>
     {#if isStepGoalSubmitted}
-    <button class="component_button_top" on:click={()=>toggleAddGoal()}>Add Goal</button>
     <p class="component_subheader"> Step Goal: {goalSteps.toLocaleString()} steps </p>
     <p class="component_text"> Current: {totalStepCount.toLocaleString()} steps </p>
     <div class="progress_bar">
@@ -371,6 +402,16 @@ let stepChart;
     <div class="progress_bar">
       <div class="progress" style="width: {goalDurationPercent}%">
         <p class=progress_text>{goalDurationPercent}%</p>
+      </div>
+    </div>
+    <br>
+    {/if}
+    {#if isWaterGoalSubmitted}
+    <p class="component_subheader"> Water Goal: {goalWater.toLocaleString()} mL </p>
+    <p class="component_text"> Current: {totalWater.toLocaleString()} mL </p>
+    <div class="progress_bar">
+      <div class="progress" style="width: {goalWaterPercent}%">
+        <p class=progress_text>{goalWaterPercent}%</p>
       </div>
     </div>
     <br>

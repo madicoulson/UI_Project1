@@ -180,7 +180,7 @@
           Weight (lbs): <input type="number" class="number_box" bind:value={weightVal} min="0" max="1000" />
         </label>
         <br>
-        <button class="general_button" on:click={()=>addLiftData()}>Submit</button>
+        <button class="general_button" on:click={()=>addLiftData()}>Add</button>
       </div>
       {/if}
       <p class="component_subheader"> Duration in Minutes </p>
