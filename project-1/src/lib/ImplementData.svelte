@@ -16,6 +16,7 @@
     let exerciseName = "";
     let numSets = 0;
     let weightVal = 0;
+    let isWorkoutSubmitted = false;
 
     // Binded value within Water Log component
     let waterAmount = 0;
@@ -103,11 +104,11 @@
     currentDay.workout.distance = parseInt(inputDistance);
   }
 
-  function addLiftData (inputExercise, inputSets, inputWeight) {
+  function addLiftData () {
     let lift = {};
-    lift.exercise = inputExercise;
-    lift.sets = parseInt(inputSets);
-    lift.weight = parseInt(inputWeight);
+    lift.exercise = exerciseName;
+    lift.sets = numSets;
+    lift.weight = weightVal;
 
     // Set the exisitingLiftDate to either the already updated currentDay.workout.lift, or
     // an empty array if not initialized. Push the lift data onto exisitingLiftData. 
@@ -115,6 +116,10 @@
     existingLiftData.push(lift);
 
     currentDay.workout.lift = existingLiftData;
+
+    exerciseName = "";
+    numSets = 0;
+    weightVal = 0;
   }
 
   // Here want to add so it spits out a summary of your workout
@@ -122,9 +127,14 @@
     if (currentDay.workout.type === "" || currentDay.workout.duration === null || currentDay.workout.duration === 0) {
       alert("Please insert a workout type and duration before submitting.")
     }
-    else {appendCurrentDay();} 
-    let check = JSON.stringify(currentDay.workout);
-    alert(check);  
+    else {
+      appendCurrentDay(); 
+      isWorkoutSubmitted = true;
+    } 
+  }
+
+  function toggleSubmitWorkout () {
+    isWorkoutSubmitted = false;
   }
 
   function addWater (inputWater) {
@@ -142,40 +152,56 @@
 
 <implementData>
     <p class="component_header"> Workout Log </p>
-    <p class="component_subheader"> Workout Type </p>
-    <label class="component_text checkbox_spacing">
-      <input type="checkbox" bind:checked={isWeightLift} on:click={()=>toggleWorkout("weights")}> Weight Lifting
-      <input type="checkbox" bind:checked={isRun} on:click={()=>toggleWorkout("run")}> Running
-      <input type="checkbox" bind:checked={isYoga} on:click={()=>toggleWorkout("yoga")}> Yoga / Pilates
-      <input type="checkbox" bind:checked={isBike} on:click={()=>toggleWorkout("bike")}> Biking
-      <input type="checkbox" bind:checked={isSwim} on:click={()=>toggleWorkout("swim")}> Swimming
-      <input type="checkbox" bind:checked={isOther} on:click={()=>toggleWorkout("other")}> Other    
-    </label>
-    {#if isRun || isSwim || isBike}
-    <div class="dropdown_spacing">
-      <label class="component_text">
-        Distance in Miles: <input type="number" class="number_box" min="0" max="1000" bind:value={workoutDistance} on:change={()=>addWorkoutDistance(workoutDistance)}>
+    {#if isWorkoutSubmitted === false}
+      <p class="component_subheader"> Workout Type </p>
+      <label class="component_text checkbox_spacing">
+        <input type="checkbox" bind:checked={isWeightLift} on:click={()=>toggleWorkout("weights")}> Weight Lifting
+        <input type="checkbox" bind:checked={isRun} on:click={()=>toggleWorkout("run")}> Running
+        <input type="checkbox" bind:checked={isYoga} on:click={()=>toggleWorkout("yoga")}> Yoga / Pilates
+        <input type="checkbox" bind:checked={isBike} on:click={()=>toggleWorkout("bike")}> Biking
+        <input type="checkbox" bind:checked={isSwim} on:click={()=>toggleWorkout("swim")}> Swimming
+        <input type="checkbox" bind:checked={isOther} on:click={()=>toggleWorkout("other")}> Other    
       </label>
-    </div>
-    {/if}
-    {#if isWeightLift}
-    <div class=dropdown_spacing>
-      <label class="component_text">
-        Exercise: <input type="text" bind:value={exerciseName}>
+      {#if isRun || isSwim || isBike}
+      <div class="dropdown_spacing">
+        <label class="component_text">
+          Distance in Miles: <input type="number" class="number_box" min="0" max="1000" bind:value={workoutDistance} on:change={()=>addWorkoutDistance(workoutDistance)}>
+        </label>
+      </div>
+      {/if}
+      {#if isWeightLift}
+      <div class=dropdown_spacing>
+        <p class="component_subheader"> Enter your lift, and press submit to add it. You can add as many lifts as you like. </p>
+        <label class="component_text">
+          Exercise: <input type="text" bind:value={exerciseName}>
+          <br>
+          Sets: <input type="number" class="number_box" bind:value={numSets} min="0" max="100" />
+          <br>
+          Weight (lbs): <input type="number" class="number_box" bind:value={weightVal} min="0" max="1000" />
+        </label>
         <br>
-        Sets: <input type="number" class="number_box" bind:value={numSets} min="0" max="100" />
-        <br>
-        Weight (lbs): <input type="number" class="number_box" bind:value={weightVal} min="0" max="1000" />
-      </label>
+        <button class="general_button" on:click={()=>addLiftData()}>Submit</button>
+      </div>
+      {/if}
+      <p class="component_subheader"> Duration in Minutes </p>
+      <input type="number" class="number_box" bind:value={workoutDuration} min="0" max="180" on:change={()=>addWorkoutDuration(workoutDuration)} />
+        <input type="range" bind:value={workoutDuration} min="0" max="180" on:change={()=>addWorkoutDuration(workoutDuration)}/>
       <br>
-      <button class="general_button" on:click={()=>addLiftData(exerciseName, numSets, weightVal)}>Submit</button>
-    </div>
+      <button class="component_button" on:click={()=>submitWorkoutData()}>Submit Workout</button>
+    {:else}
+      <p class="component_subheader"> Workout Submitted! To re-enter or change your workout, press re-enter workout. This will remove your previous submission. </p>
+      <br>
+      <p class="component_subheader"> Workout Summary: </p>
+      <p class="component_text"> Workout Type: {currentDay.workout.type} </p>
+      <p class="component_text"> Duration: {currentDay.workout.duration} minutes </p>
+      {#if isRun || isSwim || isBike}
+        <p class="component_text"> Distance: {currentDay.workout.distance} miles </p>
+      {/if}
+      {#if isWeightLift}
+        <p class="component_text"> Lift Data: {JSON.stringify(currentDay.workout.lift)} </p>
+      {/if}
+      <button class="component_button" on:click={()=>toggleSubmitWorkout()}>Re-enter Workout</button>
     {/if}
-    <p class="component_subheader"> Duration in Minutes </p>
-    <input type="number" class="number_box" bind:value={workoutDuration} min="0" max="180" on:change={()=>addWorkoutDuration(workoutDuration)} />
-      <input type="range" bind:value={workoutDuration} min="0" max="180" on:change={()=>addWorkoutDuration(workoutDuration)}/>
-    <br>
-    <button class="component_button" on:click={()=>submitWorkoutData()}>Submit Workout</button>
 </implementData>
 
 <implementData>
@@ -237,6 +263,7 @@ implementData {
   border-bottom: 2px solid rgb(52, 76, 98);
   padding-bottom: 10px;
 }
+
 .component_button {
   font-family: Verdana, Geneva, Tahoma, sans-serif;
   font-size: 16px;
@@ -247,9 +274,10 @@ implementData {
   border-radius: 16px;
   width:fit-content;
   position:absolute;
-  bottom: 10px;
   right: 10px;
+  bottom: 10px;
 }
+
 .general_button {
   font-family: Verdana, Geneva, Tahoma, sans-serif;
   font-size: 14px;

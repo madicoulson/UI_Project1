@@ -9,11 +9,14 @@ let stepChart;
  let chart1, chart2;
  
 
- // Binded values for goals
- let totalStepCount = 0;
- let goalStepCount = 100000;
- let goalStepGraph;
- let goalGraph1;
+  // Binded values for goals
+  let totalStepCount = 0;
+  let goalStepCount = 100000;
+  let goalStepGraph;
+  let goalGraph1;
+  let isAddGoal = false;
+  let goalType = "";
+  let workoutGoalType = "";
 
   // Binded and helper values within Past Workouts component
   let clickCount = 0;
@@ -228,7 +231,7 @@ function renderGoals () {
   }
 
   function toggleEditWorkout() {
-    if (editWorkout) {editWorkout = false;}
+    if (editWorkout) {editWorkout = false; renderGoals();}
     else {editWorkout = true;}
   }
 
@@ -246,13 +249,71 @@ function renderGoals () {
     }
   }
 
+  function toggleAddGoal() {
+    if (isAddGoal) {isAddGoal = false;}
+    else {isAddGoal = true;}
+  }
+
 </script>
 
 
 <div class="component">
-    <p class="component_header"> Current Goals </p>
+  <p class="component_header"> Current Goals </p>
+  {#if isAddGoal}
+  <br>
+  <p class="component_subheader"> All goals entered will be tracked as a running total against all of your entries. </p>
+    <button class="component_button_top" on:click={()=>toggleAddGoal()}>Cancel</button>
+    <button class="component_button"> Submit Goal </button>
+    <label for="goal_type" class="component_subheader">Select Goal Type:</label>
+    <select name="goal_type" class="component_text" bind:value={goalType}>
+      <option> </option>
+      <option value="workout"> Workout </option>
+      <option value="water"> Water </option>
+      <option value="steps"> Steps </option>
+    </select>
+    {#if goalType === "water"}
+      <br>
+      <br>
+      <label class="component_subheader">
+        Insert Goal Amount of Water in mL: <input type="number" class="number_box" min="0" max="100" />
+      </label>
+    {/if}
+    {#if goalType === "steps"}
+      <br>
+      <br>
+      <label class="component_subheader">
+        Insert Goal Amount of Steps: <input type="number" class="number_box" min="0" max="100" />
+      </label>
+    {/if}
+    {#if goalType === "workout"}
+      <br>
+      <br>
+      <label for="workout_goal" class="component_subheader">Select Workout Goal Type:</label>
+      <select name="goal_type" class="component_text" bind:value={workoutGoalType}>
+        <option> </option>
+        <option value="distance"> Distance </option>
+        <option value="duration"> Duration </option>
+      </select>
+      {#if workoutGoalType === "distance"}
+      <br>
+      <br>
+      <label class="component_subheader">
+        Insert Goal Number of Miles: <input type="number" class="number_box" min="0" max="100" />
+      </label>
+      {/if}
+      {#if workoutGoalType === "duration"}
+        <br>
+        <br>
+        <label class="component_subheader">
+          Insert Goal Number of Minutes: <input type="number" class="number_box" min="0" max="100" />
+        </label>
+      {/if}
+    {/if}
+  {:else}
     <button class="component_button_top" on:click={()=>renderGoals()}>Refresh Goals</button>
+    <button class="component_button_beneath_top" on:click={()=>toggleAddGoal()}>Add Goal</button>
     <canvas bind:this={goalStepGraph}></canvas>
+  {/if}
   </div>
 
   <div class="component">
@@ -312,3 +373,47 @@ function renderGoals () {
     <button class="component_button" on:click={()=> displayPastWorkouts()}> Next Workout > </button>
     {/if}
   </div>
+
+  <style>
+  .component_button {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 16px;
+    padding: 12px 24px 12px 24px;
+    margin-top: 10px;
+    background-color:rgb(52, 76, 98);
+    color: white;
+    border-radius: 16px;
+    width:fit-content;
+    position:absolute;
+    right: 10px;
+    bottom: 10px;
+  }
+
+  .component_button_top {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 14px;
+    padding: 6px 12px 6px 12px;
+    margin-top: 10px;
+    background-color:rgb(52, 76, 98);
+    color: white;
+    border-radius: 16px;
+    width:fit-content;
+    position:absolute;
+    top: 72px;
+    right: 10px;
+  }
+
+  .component_button_beneath_top {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 14px;
+    padding: 6px 12px 6px 12px;
+    margin-top: 10px;
+    background-color:rgb(52, 76, 98);
+    color: white;
+    border-radius: 16px;
+    width:fit-content;
+    position:absolute;
+    top: 120px;
+    right: 10px;
+  }
+  </style>
