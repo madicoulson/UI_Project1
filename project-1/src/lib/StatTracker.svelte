@@ -103,24 +103,32 @@
 <statTracker>
     <p class="component_header"> Tracking Stats </p>
     <button class="component_button_top" on:click={()=>renderGraphs()}>Refresh Graphs</button>
+    <br> <br>
     <canvas bind:this={durationChart}></canvas>
+    <br> <br>
     <canvas bind:this={stepChart}></canvas>
 </statTracker>
 
 <style>
-    statTracker {
-        background-color: rgb(228, 234, 238);
-        height: 50vh;
-        width: 33vw;
-        max-width: 100%;
-        max-height: 100%;
-        border: rgb(52, 76, 98);
-        border-width: 1.5px;
-        border-style: solid;
-        padding: 10px;
-        margin: 10px;
-        position: relative;
-        border-radius: 16px;
-        overflow:auto;
-    }
+statTracker {
+    background-color: rgb(228, 234, 238);
+    height: 50vh;
+    width: 33vw;
+    max-width: 100%;
+    max-height: 100%;
+    border: rgb(52, 76, 98);
+    border-width: 1.5px;
+    border-style: solid;
+    padding: 10px;
+    margin: 10px;
+    position: relative;
+    border-radius: 16px;
+    overflow:auto;
+}
+
+canvas {
+  width: 100%;
+  height: 100%;
+  background-color:  rgb(211, 217, 222);
+}
 </style>

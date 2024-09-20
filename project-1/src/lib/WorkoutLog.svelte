@@ -341,19 +341,31 @@
 </workoutLog>
 
 <style>
-    workoutLog {
-      background-color: rgb(228, 234, 238);
-      height: 50vh;
-      width: 33vw;
-      max-width: 100%;
-      max-height: 100%;
-      border: rgb(52, 76, 98);
-      border-width: 1.5px;
-      border-style: solid;
-      padding: 10px;
-      margin: 10px;
-      position: relative;
-      border-radius: 16px;
-      overflow:auto;
-    }
+workoutLog {
+  background-color: rgb(228, 234, 238);
+  height: 50vh;
+  width: 33vw;
+  max-width: 100%;
+  max-height: 100%;
+  border: rgb(52, 76, 98);
+  border-width: 1.5px;
+  border-style: solid;
+  padding: 10px;
+  margin: 10px;
+  position: relative;
+  border-radius: 16px;
+  overflow:auto;
+}
+
+.dropdown_spacing {
+  margin-top: 20px;
+  display:block;
+  background-color: rgb(211, 217, 222);
+  padding: 10px;
+  width:fit-content;
+}
+
+.checkbox_spacing input[type="checkbox"] {
+  margin-left: 10px; /* Adjust the spacing as needed */
+}
 </style>

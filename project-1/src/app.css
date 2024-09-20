@@ -1,3 +1,4 @@
+/* Image style features for SVG images. */
 img{
   display: block;
   margin-left: auto;
@@ -5,15 +6,26 @@ img{
   width: 45%;
 }
 
-canvas {
-  width: 100%;
-  height: 100%;
-}
-
+/* Centering for components. */
 .center {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+/* Button Types */
+.component_button {
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-size: 16px;
+  padding: 12px 24px 12px 24px;
+  margin-top: 10px;
+  background-color:rgb(52, 76, 98);
+  color: white;
+  border-radius: 16px;
+  width:fit-content;
+  position:absolute;
+  right: 10px;
+  bottom: 10px;
 }
 
 .component_button_top {
@@ -30,28 +42,7 @@ canvas {
   right: 10px;
 }
 
-.general_button {
-  font-family: Verdana, Geneva, Tahoma, sans-serif;
-  font-size: 14px;
-  padding: 6px 12px 6px 12px;
-  margin-top: 10px;
-  background-color:rgb(52, 76, 98);
-  color: white;
-  border-radius: 16px;
-  width:fit-content;
-}
-
-.header {
-  font-family: Verdana, Geneva, Tahoma, sans-serif;
-  color: rgb(52, 76, 98);
-  font-size: 30px;
-  font-weight: 1000;
-  height: fit-content;
-  padding: 10px;
-  margin-bottom: 0px;
-  letter-spacing: 1.5px;
-}
-
+/* Text Types */
 .component_header {
   font-family: Verdana, Geneva, Tahoma, sans-serif;
   color: rgb(52, 76, 98);
@@ -79,44 +70,7 @@ canvas {
   padding-top: 0px;
 }
 
-.checkbox_spacing input[type="checkbox"] {
-  margin-left: 10px; /* Adjust the spacing as needed */
-}
-
-.number_spacing input[type="number"] {
-  /* Adjust the spacing as needed */
-  display:inline-block;
-}
-
-.dropdown_spacing {
-  margin-top: 20px;
-  display:block;
-  background-color: rgb(211, 217, 222);
-  padding: 10px;
-  width:fit-content;
-}
-
-.component {
-  background-color: rgb(228, 234, 238);
-  height: 50vh;
-  width: 33vw;
-  max-width: 100%;
-  max-height: 100%;
-  border: rgb(52, 76, 98);
-  border-width: 1.5px;
-  border-style: solid;
-  padding: 10px;
-  margin: 10px;
-  position: relative;
-  border-radius: 16px;
-  overflow:auto;
-}
-
-/* Class to develop rows within the webpage. */
-.row {
-  display: flex;
-}
-
+/* Number box Types */
 .number_box {
   height:fit-content;
   width: 48px;
@@ -129,18 +83,4 @@ canvas {
   font-family: Verdana, Geneva, Tahoma, sans-serif;
   padding: 3px;
   margin: 15px;
-}
-
-.component_button {
-  font-family: Verdana, Geneva, Tahoma, sans-serif;
-  font-size: 16px;
-  padding: 12px 24px 12px 24px;
-  margin-top: 10px;
-  background-color:rgb(52, 76, 98);
-  color: white;
-  border-radius: 16px;
-  width:fit-content;
-  position:absolute;
-  right: 10px;
-  bottom: 10px;
 }
