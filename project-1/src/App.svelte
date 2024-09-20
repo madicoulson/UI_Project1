@@ -6,11 +6,14 @@
   // https://www.educative.io/answers/how-to-create-charts-with-svelte-and-chartjs
 
   import Header from './lib/Header.svelte'
-  import ImplementData from './lib/ImplementData.svelte';
   import Row from './lib/Row.svelte';
-  import ProgressTracking from './lib/ProgressTracking.svelte';
   import Subheader from './lib/Subheader.svelte';
   import WorkoutLog from './lib/WorkoutLog.svelte';
+  import WaterLog from './lib/WaterLog.svelte';
+  import StepLog from './lib/StepLog.svelte';
+  import GoalTracker from './lib/GoalTracker.svelte';
+  import StatTracker from './lib/StatTracker.svelte';
+  import WorkoutTracker from './lib/WorkoutTracker.svelte';
 
 </script>
 
@@ -22,13 +25,16 @@
 
   <Row>
     <WorkoutLog></WorkoutLog>
-    <ImplementData></ImplementData>
+    <WaterLog></WaterLog>
+    <StepLog></StepLog>
   </Row>  
 
   <Subheader subheader="PROGRESS TRACKING"></Subheader>
 
   <Row>
-   <ProgressTracking></ProgressTracking>
+    <GoalTracker></GoalTracker>
+    <StatTracker></StatTracker>
+    <WorkoutTracker></WorkoutTracker>
   </Row> 
 </main>
 
