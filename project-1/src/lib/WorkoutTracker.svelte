@@ -107,10 +107,11 @@
 
   <workoutTracker>
     <p class="component_header"> Past Workouts </p>
+
+    <div class="workoutTrackerContent">
+    <div class="workoutTrackerLeft"> 
     <p class="component_subheader">Past Workout: {workoutDate}</p>
     {#if editWorkout}
-
-      <button class="component_button_top" on:click={()=>toggleEditWorkout()}>Cancel</button>
       <label class="component_text">Workout Type:
         <input type="text" placeholder={selectedWorkoutType} bind:value={newWorkoutType}>
       </label>
@@ -128,7 +129,6 @@
 
       <br>
       {#if selectedWorkoutLift !== undefined}
-      <p class="component_text"> {JSON.stringify(selectedWorkoutLift)} </p>
       {#each selectedWorkoutLift as lift, index}
       <label class="component_text">Exercise:
         <input type="text" on:click={()=>initializeWorkoutArrays()} placeholder={lift.exercise} bind:value={newWorkoutExercises[index]}>
@@ -146,15 +146,24 @@
       {/each}
       {/if}
 
-      <button class="component_button" on:click={()=>updateWorkout()} on:click={()=>toggleEditWorkout()}> Submit Changes </button>
-
 
     {:else}
-    <button class="component_button_top" on:click={()=>toggleEditWorkout()}>Edit Workout</button>
     <p class="component_text"> {@html workoutDisplay} </p>
-    <button class="component_button" on:click={()=> displayPastWorkouts()}> Next Workout > </button>
     {/if}
+  </div>
+  <div class="workoutTrackerRight">
+    {#if editWorkout}
+    <button class="component_button_top" on:click={()=>toggleEditWorkout()}>Cancel</button>
+    <button class="component_button" on:click={()=>updateWorkout()} on:click={()=>toggleEditWorkout()}> Submit Changes </button>
+
+    {:else}
+      <button class="component_button_top" on:click={()=>toggleEditWorkout()}>Edit Workout</button>
+      <button class="component_button" on:click={()=> displayPastWorkouts()}> Next Workout > </button>
+    {/if}
+  </div>
+</div>
   </workoutTracker>
+
 
   <style>
     workoutTracker {
@@ -166,45 +175,36 @@
     border: rgb(52, 76, 98);
     border-width: 1.5px;
     border-style: solid;
+    border-radius: 16px;
+    display:flex;
+    flex-direction: column;
     padding: 10px;
     margin: 10px;
-    position: relative;
-    border-radius: 16px;
-    overflow:auto;
 }
-  .component_button {
-    font-family: Verdana, Geneva, Tahoma, sans-serif;
-    font-size: 16px;
-    padding: 12px 24px 12px 24px;
-    margin-top: 10px;
-    background-color:rgb(52, 76, 98);
-    color: white;
-    border-radius: 16px;
-    width:fit-content;
-    position:absolute;
-    right: 10px;
-    bottom: 10px;
+
+.workoutTrackerContent {
+    display:flex;
+    justify-content: space-between;
+    overflow: hidden;
+    height: 100%;
+}
+
+  .relative_pos {
+    position: relative;
   }
 
-  .component_button_top {
-    font-family: Verdana, Geneva, Tahoma, sans-serif;
-    font-size: 14px;
-    padding: 6px 12px 6px 12px;
-    margin-top: 10px;
-    background-color:rgb(52, 76, 98);
-    color: white;
-    border-radius: 16px;
-    width:fit-content;
-    position:absolute;
-    top: 72px;
-    right: 10px;
+  .workoutTrackerLeft {
+    overflow: auto;
+    width: 100%;
+    scrollbar-width: none;
   }
 
-  .component_text {
-    font-family: Verdana, Geneva, Tahoma, sans-serif;
-    color: rgb(52, 76, 98);
-    font-size: 20px;
-    font-weight: 400px;
-    padding-top: 0px;
+  .workoutTrackerRight {
+    width: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-end;
+
   }
   </style>
