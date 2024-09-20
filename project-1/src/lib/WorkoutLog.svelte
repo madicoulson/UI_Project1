@@ -1,8 +1,5 @@
 <script lang="js">
-    import {appendCurrentDay, dataPool, currentDay} from './script'
-    import waterSVG from './water.svg'
-    import stepSVG from './walking.svg'
-    //import {easyFunc} from './ProgressTracking.svelte'
+    import {appendCurrentDay, currentDay} from './script'
     
     // Binded values within Workout Log component
     let workoutDuration = 0;
@@ -44,14 +41,6 @@
     let isSkiingCheckedTemp = false;
     let isWalkingCheckedTemp = false;
     let isSportsCheckedTemp = false;
-
-    // Binded value within Water Log component
-    let waterAmount = 0;
-    let isWaterEntered = false;
-
-    // Binded value within Step Counter component
-    let stepAmount = 0;
-    let isStepsEntered = false;
 
   // Function to toggle between workouts to ensure only one workout is selected at a time. 
   function toggleWorkout(workout) {
@@ -187,14 +176,6 @@
     }
   }
 
-  function toggleWaterEntered() {
-    isWaterEntered = true;
-  }
-
-  function toggleStepsEntered() {
-    isStepsEntered = true;
-  }
-
   function addWorkoutType (inputType) {
     currentDay.workout.type = inputType;
   }
@@ -240,16 +221,6 @@
     isWorkoutSubmitted = false;
   }
 
-  function addWater (inputWater) {
-    currentDay.water = parseInt(inputWater);
-    appendCurrentDay();
-  }
-
-  function addSteps (inputSteps) {
-    currentDay.steps = parseInt(inputSteps);
-    appendCurrentDay();
-  }
-
   function toggleIsCustomizeWorkout () {
     if (isCustomizeWorkouts){isCustomizeWorkouts=false;}
     else {isCustomizeWorkouts=true;}
@@ -270,88 +241,119 @@
 
 </script>
 
-<implementData>
-    <p class="component_header"> Water Log </p>
-    <img src={waterSVG} alt="Water Bottle">
-    <br>
-    <label class="center component_subheader">
-      Input Water (mL): <input type="number" class="number_box_water_steps" bind:value={waterAmount} min="0" max="10000" on:change={()=>addWater(waterAmount)}  on:change={()=>toggleWaterEntered()} />
-      <input type="range" bind:value={waterAmount} min="0" max="10000" on:change={()=>addWater(waterAmount)} on:change={()=>toggleWaterEntered()} />
-    </label>
-    {#if (isWaterEntered)}
-    <p class="component_text"> The amount of water logged for today is <strong>{waterAmount} mL</strong>. If you would like to change the amount, reenter the value. </p>
-    {/if}
-</implementData>
+<workoutLog>
+    <p class="component_header"> Workout Log </p>
+    {#if isWorkoutSubmitted === false && isCustomizeWorkouts === false}
+      <p class="component_subheader"> Workout Type </p>
+      <button class="component_button_top" on:click={()=>toggleIsCustomizeWorkout()}>Customize Workouts</button>
+      <label class="component_text checkbox_spacing">
+        {#if isWeightLiftChecked}
+        <input type="checkbox" bind:checked={isWeightLift} on:click={()=>toggleWorkout("weights")}> Weight Lifting
+        {/if}
+        {#if isRunChecked}
+        <input type="checkbox" bind:checked={isRun} on:click={()=>toggleWorkout("run")}> Running
+        {/if}
+        {#if isYogaChecked}
+        <input type="checkbox" bind:checked={isYoga} on:click={()=>toggleWorkout("yoga")}> Yoga / Pilates
+        {/if}
+        {#if isBikeChecked}
+        <input type="checkbox" bind:checked={isBike} on:click={()=>toggleWorkout("bike")}> Biking
+        {/if}
+        {#if isSwimChecked}
+        <input type="checkbox" bind:checked={isSwim} on:click={()=>toggleWorkout("swim")}> Swimming
+        {/if}  
+        {#if isHikingChecked}
+        <input type="checkbox" bind:checked={isHike} on:click={()=>toggleWorkout("hike")}> Hiking
+        {/if}  
+        {#if isSkiingChecked}
+        <input type="checkbox" bind:checked={isSki} on:click={()=>toggleWorkout("ski")}> Skiing
+        {/if}  
+        {#if isWalkingChecked}
+        <input type="checkbox" bind:checked={isWalk} on:click={()=>toggleWorkout("walk")}> Walking
+        {/if} 
+        {#if isSportsChecked}
+        <input type="checkbox" bind:checked={isSports} on:click={()=>toggleWorkout("sports")}> Sports
+        {/if}
+        {#if isOtherChecked}
+        <input type="checkbox" bind:checked={isOther} on:click={()=>toggleWorkout("other")}> Other
+        {/if}
+      </label>
+      {#if isRun || isSwim || isBike || isHike || isWalk}
+      <div class="dropdown_spacing">
+        <label class="component_text">
+          Distance in Miles: <input type="number" class="number_box" min="0" max="1000" bind:value={workoutDistance} on:change={()=>addWorkoutDistance(workoutDistance)}>
+        </label>
+      </div>
+      {/if}
+      {#if isWeightLift}
+      <div class=dropdown_spacing>
+        <p class="component_subheader"> Enter your lift, and press submit to add it. You can add as many lifts as you like. </p>
+        <label class="component_text">
+          Exercise: <input type="text" bind:value={exerciseName}>
+          <br>
+          Sets: <input type="number" class="number_box" bind:value={numSets} min="0" max="100" />
+          <br>
+          Weight (lbs): <input type="number" class="number_box" bind:value={weightVal} min="0" max="1000" />
+        </label>
+        <br>
+        <button class="general_button" on:click={()=>addLiftData()}>Add</button>
+      </div>
+      {/if}
+      <p class="component_subheader"> Duration in Minutes </p>
+      <input type="number" class="number_box" bind:value={workoutDuration} min="0" max="180" on:change={()=>addWorkoutDuration(workoutDuration)} />
+        <input type="range" bind:value={workoutDuration} min="0" max="180" on:change={()=>addWorkoutDuration(workoutDuration)}/>
+      <br>
+      <button class="component_button" on:click={()=>submitWorkoutData()}>Submit Workout</button>
+    {:else if isWorkoutSubmitted === false && isCustomizeWorkouts === true}
+      <button class="component_button_top" on:click={()=>toggleIsCustomizeWorkout()}>Cancel</button>
+      <p class="component_subheader"> Edit Workout Types </p>
+      <p class="component_text"> Check the workout types you want to include: </p>
+      <label class="component_text checkbox_spacing">
+        <input type="checkbox" bind:checked={isWeightLiftCheckedTemp}> Weight Lifting
+        <input type="checkbox" bind:checked={isRunCheckedTemp}> Running
+        <input type="checkbox" bind:checked={isYogaCheckedTemp}> Yoga / Pilates
+        <input type="checkbox" bind:checked={isBikeCheckedTemp}> Biking
+        <input type="checkbox" bind:checked={isSwimCheckedTemp}> Swimming    
+        <input type="checkbox" bind:checked={isHikingCheckedTemp}> Hiking    
+        <input type="checkbox" bind:checked={isSkiingCheckedTemp}> Skiing 
+        <input type="checkbox" bind:checked={isWalkingCheckedTemp}> Walking
+        <input type="checkbox" bind:checked={isSportsCheckedTemp}> Sports   
+        <input type="checkbox" bind:checked={isOtherCheckedTemp}> Other    
 
-<implementData>
-    <p class="component_header"> Step Counter </p>
-    <img src={stepSVG} alt="Person Walking">
-    <br>
-    <label class="center component_subheader">
-      Input Steps: <input type="number" class="number_box_water_steps" bind:value={stepAmount} min="0" max="40000" on:change={()=>addSteps(stepAmount)} on:change={()=>toggleStepsEntered()} />
-      <input type="range" bind:value={stepAmount} min="0" max="40000" on:change={()=>addSteps(stepAmount)} on:change={()=>toggleStepsEntered()} />
-    </label>
-    {#if (isStepsEntered)}
-    <p class="component_text">The amount of steps logged for today is <strong>{stepAmount}</strong>.If you would like to change the amount, reenter the value. </p>
+      </label>
+      <button class="component_button" on:click={()=>setCustomizations()} on:click={()=>toggleIsCustomizeWorkout()}>Submit Customization</button>
+
+
+    {:else}
+      <p class="component_subheader"> Workout Submitted! To re-enter or change your workout, press re-enter workout. This will remove your previous submission. </p>
+      <br>
+      <p class="component_subheader"> Workout Summary: </p>
+      <p class="component_text"> Workout Type: {currentDay.workout.type} </p>
+      <p class="component_text"> Duration: {currentDay.workout.duration} minutes </p>
+      {#if isRun || isSwim || isBike || isHike || isWalk}
+        <p class="component_text"> Distance: {currentDay.workout.distance} miles </p>
+      {/if}
+      {#if isWeightLift}
+        <p class="component_text"> Lift Data: {JSON.stringify(currentDay.workout.lift)} </p>
+      {/if}
+      <button class="component_button" on:click={()=>toggleSubmitWorkout()}>Re-enter Workout</button>
     {/if}
-</implementData>
+</workoutLog>
 
 <style>
-implementData {
-  background-color: rgb(228, 234, 238);
-  height: 50vh;
-  width: 33vw;
-  max-width: 100%;
-  max-height: 100%;
-  border: rgb(52, 76, 98);
-  border-width: 1.5px;
-  border-style: solid;
-  padding: 10px;
-  margin: 10px;
-  position: relative;
-  border-radius: 16px;
-  overflow:auto;
-}
-.component_subheader {
-  font-family: Verdana, Geneva, Tahoma, sans-serif;
-  color: rgb(52, 76, 98);
-  font-size: 20px;
-  font-weight: 700;
-  padding-top: 0px;
-}
-.component_header {
-  font-family: Verdana, Geneva, Tahoma, sans-serif;
-  color: rgb(52, 76, 98);
-  font-size: 30px;
-  font-weight: 500;
-  padding-top: 0px;
-  margin-top: 0px;
-  border-bottom: 2px solid rgb(52, 76, 98);
-  padding-bottom: 10px;
-}
-
-.component_button {
-  font-family: Verdana, Geneva, Tahoma, sans-serif;
-  font-size: 16px;
-  padding: 12px 24px 12px 24px;
-  margin-top: 10px;
-  background-color:rgb(52, 76, 98);
-  color: white;
-  border-radius: 16px;
-  width:fit-content;
-  position:absolute;
-  right: 10px;
-  bottom: 10px;
-}
-
-.general_button {
-  font-family: Verdana, Geneva, Tahoma, sans-serif;
-  font-size: 14px;
-  padding: 6px 12px 6px 12px;
-  margin-top: 10px;
-  background-color:rgb(52, 76, 98);
-  color: white;
-  border-radius: 16px;
-  width:fit-content;
-}
+    workoutLog {
+      background-color: rgb(228, 234, 238);
+      height: 50vh;
+      width: 33vw;
+      max-width: 100%;
+      max-height: 100%;
+      border: rgb(52, 76, 98);
+      border-width: 1.5px;
+      border-style: solid;
+      padding: 10px;
+      margin: 10px;
+      position: relative;
+      border-radius: 16px;
+      overflow:auto;
+    }
 </style>

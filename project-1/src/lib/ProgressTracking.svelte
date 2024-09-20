@@ -324,8 +324,8 @@ let stepChart;
 <div class="component">
   <p class="component_header"> Current Goals </p>
   {#if isAddGoal}
-  <br>
-  <p class="component_subheader"> All goals entered will be tracked as a running total against all of your entries. </p>
+  <p class="component_subheader"> All goals entered will be tracked as a </p>
+  <p class="component_subheader">running total against all of your entries.</p>
     <button class="component_button_top" on:click={()=>toggleAddGoal()}>Cancel</button>
     <button class="component_button" on:click={()=>addGoal()}> Submit Goal </button>
     <label for="goal_type" class="component_subheader">Select Goal Type:</label>

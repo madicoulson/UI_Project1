@@ -10,6 +10,7 @@
   import Row from './lib/Row.svelte';
   import ProgressTracking from './lib/ProgressTracking.svelte';
   import Subheader from './lib/Subheader.svelte';
+  import WorkoutLog from './lib/WorkoutLog.svelte';
 
 </script>
 
@@ -20,6 +21,7 @@
   
 
   <Row>
+    <WorkoutLog></WorkoutLog>
     <ImplementData></ImplementData>
   </Row>  
 

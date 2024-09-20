@@ -122,3 +122,25 @@ canvas {
   width: 48px;
   font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
+
+.number_box_water_steps {
+  height:fit-content;
+  width: 48px;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  padding: 3px;
+  margin: 15px;
+}
+
+.component_button {
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-size: 16px;
+  padding: 12px 24px 12px 24px;
+  margin-top: 10px;
+  background-color:rgb(52, 76, 98);
+  color: white;
+  border-radius: 16px;
+  width:fit-content;
+  position:absolute;
+  right: 10px;
+  bottom: 10px;
+}
