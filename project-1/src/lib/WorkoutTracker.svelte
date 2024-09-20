@@ -189,7 +189,7 @@
   .workoutTrackerLeft {
     overflow: auto;
     width: 100%;
-    scrollbar-width: none;
+    scrollbar-width:thin;
   }
 
   .workoutTrackerRight {

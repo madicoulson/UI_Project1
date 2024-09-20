@@ -8,12 +8,12 @@
   import Header from './lib/Header.svelte'
   import Row from './lib/Row.svelte';
   import Subheader from './lib/Subheader.svelte';
-  import WorkoutLogCorrect from './lib/WorkoutLogCorrect.svelte';
-  import StepLog from './lib/StepLog.svelte';
+  import WorkoutLog from './lib/WorkoutLogger.svelte';
+  import StepLog from './lib/StepLogger.svelte';
   import GoalTracker from './lib/GoalTracker.svelte';
   import StatTracker from './lib/StatTracker.svelte';
   import WorkoutTracker from './lib/WorkoutTracker.svelte';
-  import WaterLog from './lib/WaterLog.svelte';
+  import WaterLog from './lib/WaterLogger.svelte';
 
 </script>
 
@@ -24,7 +24,7 @@
   
 
   <Row>
-    <WorkoutLogCorrect></WorkoutLogCorrect>
+    <WorkoutLog></WorkoutLog>
     <WaterLog></WaterLog>
     <StepLog></StepLog>
   </Row>  
