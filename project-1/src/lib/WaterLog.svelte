@@ -21,6 +21,7 @@
 
 <waterLog>
     <p class="component_header"> Water Log </p>
+    <br> <br>
     <img src={waterSVG} alt="Water Bottle">
     <br>
     <label class="center component_subheader">

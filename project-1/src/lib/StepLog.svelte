@@ -19,6 +19,7 @@
 
 <stepLog>
     <p class="component_header"> Step Counter </p>
+    <br> <br>
     <img src={stepSVG} alt="Person Walking">
     <br>
     <label class="center component_subheader">

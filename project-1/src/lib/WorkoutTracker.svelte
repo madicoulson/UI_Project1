@@ -95,9 +95,6 @@
         newWorkoutSets[index] = lift.sets;
         newWorkoutWeights[index] = lift.weight;
       })
-    
-      alert(JSON.stringify(newWorkoutExercises));
-      alert(JSON.stringify(newWorkoutSets));
       alreadyInitialized = true;
     }
   }
@@ -166,7 +163,7 @@
 
 
   <style>
-    workoutTracker {
+  workoutTracker {
     background-color: rgb(228, 234, 238);
     height: 50vh;
     width: 33vw;
@@ -189,10 +186,6 @@
     height: 100%;
 }
 
-  .relative_pos {
-    position: relative;
-  }
-
   .workoutTrackerLeft {
     overflow: auto;
     width: 100%;
@@ -205,6 +198,5 @@
     flex-direction: column;
     justify-content: space-between;
     align-items: flex-end;
-
   }
   </style>

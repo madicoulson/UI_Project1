@@ -130,11 +130,10 @@
 
 <goalTracker>
     <p class="component_header"> Current Goals </p>
+    <div class="goalTrackerContent">
+    <div class="goalTrackerLeft">
     {#if isAddGoal}
-    <p class="component_subheader"> All goals entered will be tracked as a </p>
-    <p class="component_subheader">running total against all of your entries.</p>
-      <button class="component_button_top" on:click={()=>toggleAddGoal()}>Cancel</button>
-      <button class="component_button" on:click={()=>addGoal()}> Submit Goal </button>
+    <p class="component_subheader"> All goals entered will be tracked as a running total against all of your entries. </p>
       <label for="goal_type" class="component_subheader">Select Goal Type:</label>
       <select name="goal_type" class="component_text" bind:value={goalType} on:change={()=>selectGoal()}>
         <option> </option>
@@ -181,8 +180,6 @@
         {/if}
       {/if}
     {:else}
-    <button class="component_button_top" on:click={()=>toggleAddGoal()}>Add Goal</button>
-    <button class="component_button" on:click={()=>refreshGoals()}>Refresh Goals</button>
       {#if isStepGoalSubmitted}
       <p class="component_subheader"> Step Goal: {goalSteps.toLocaleString()} steps </p>
       <p class="component_text"> Current: {totalStepCount.toLocaleString()} steps </p>
@@ -224,6 +221,17 @@
       <br>
       {/if}
     {/if}
+  </div>
+  <div class="goalTrackerRight">
+    {#if isAddGoal}
+    <button class="component_button_top" on:click={()=>toggleAddGoal()}>Cancel</button>
+    <button class="component_button" on:click={()=>addGoal()}> Submit Goal </button>
+    {:else}
+    <button class="component_button_top" on:click={()=>toggleAddGoal()}>Add Goal</button>
+    <button class="component_button" on:click={()=>refreshGoals()}>Refresh Goals</button>
+    {/if}
+  </div>
+  </div>
 </goalTracker>
 
 <style>
@@ -236,11 +244,11 @@ goalTracker {
     border: rgb(52, 76, 98);
     border-width: 1.5px;
     border-style: solid;
+    border-radius: 16px;
+    display:flex;
+    flex-direction: column;
     padding: 10px;
     margin: 10px;
-    position: relative;
-    border-radius: 16px;
-    overflow:auto;
 }
 .progress_bar {
     width: 100%;
@@ -264,5 +272,26 @@ goalTracker {
     font-weight: 400px;
     padding-top: 2px;
     padding-left: 5px;
+  }
+
+  .goalTrackerContent {
+    display:flex;
+    justify-content: space-between;
+    overflow: hidden;
+    height: 100%;
+}
+
+.goalTrackerLeft {
+    overflow: auto;
+    width: 100%;
+    scrollbar-width: none;
+  }
+
+  .goalTrackerRight {
+    width: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-end;
   }
 </style>
