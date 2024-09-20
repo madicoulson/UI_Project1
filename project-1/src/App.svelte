@@ -14,6 +14,7 @@
   import GoalTracker from './lib/GoalTracker.svelte';
   import StatTracker from './lib/StatTracker.svelte';
   import WorkoutTracker from './lib/WorkoutTracker.svelte';
+    import WorkoutLogTrial from './lib/WorkoutLogTrial.svelte';
 
 </script>
 
@@ -24,7 +25,7 @@
   
 
   <Row>
-    <WorkoutLog></WorkoutLog>
+    <WorkoutLogTrial></WorkoutLogTrial>
     <WaterLog></WaterLog>
     <StepLog></StepLog>
   </Row>  
