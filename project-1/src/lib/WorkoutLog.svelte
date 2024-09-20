@@ -243,9 +243,12 @@
 
 <workoutLog>
     <p class="component_header"> Workout Log </p>
+    <div class="workoutLogContent">
+    
+    <div class="workoutLogLeft"> 
+    
     {#if isWorkoutSubmitted === false && isCustomizeWorkouts === false}
       <p class="component_subheader"> Workout Type </p>
-      <button class="component_button_top" on:click={()=>toggleIsCustomizeWorkout()}>Customize Workouts</button>
       <label class="component_text checkbox_spacing">
         {#if isWeightLiftChecked}
         <input type="checkbox" bind:checked={isWeightLift} on:click={()=>toggleWorkout("weights")}> Weight Lifting
@@ -303,9 +306,7 @@
       <input type="number" class="number_box" bind:value={workoutDuration} min="0" max="180" on:change={()=>addWorkoutDuration(workoutDuration)} />
         <input type="range" bind:value={workoutDuration} min="0" max="180" on:change={()=>addWorkoutDuration(workoutDuration)}/>
       <br>
-      <button class="component_button" on:click={()=>submitWorkoutData()}>Submit Workout</button>
     {:else if isWorkoutSubmitted === false && isCustomizeWorkouts === true}
-      <button class="component_button_top" on:click={()=>toggleIsCustomizeWorkout()}>Cancel</button>
       <p class="component_subheader"> Edit Workout Types </p>
       <p class="component_text"> Check the workout types you want to include: </p>
       <label class="component_text checkbox_spacing">
@@ -321,8 +322,6 @@
         <input type="checkbox" bind:checked={isOtherCheckedTemp}> Other    
 
       </label>
-      <button class="component_button" on:click={()=>setCustomizations()} on:click={()=>toggleIsCustomizeWorkout()}>Submit Customization</button>
-
 
     {:else}
       <p class="component_subheader"> Workout Submitted! To re-enter or change your workout, press re-enter workout. This will remove your previous submission. </p>
@@ -338,23 +337,35 @@
       {/if}
       <button class="component_button" on:click={()=>toggleSubmitWorkout()}>Re-enter Workout</button>
     {/if}
+  </div>
+    <div class="workoutLogRight">
+      {#if isWorkoutSubmitted === false && isCustomizeWorkouts === false}
+        <button class="component_button_top" on:click={()=>toggleIsCustomizeWorkout()}>Customize Workouts</button>
+        <button class="component_button" on:click={()=>submitWorkoutData()}>Submit Workout</button>
+      {:else if isWorkoutSubmitted === false && isCustomizeWorkouts === true}
+        <button class="component_button_top" on:click={()=>toggleIsCustomizeWorkout()}>Cancel</button>
+        <button class="component_button" on:click={()=>setCustomizations()} on:click={()=>toggleIsCustomizeWorkout()}>Submit Customization</button>
+      {/if}
+
+    </div>
+    </div>
 </workoutLog>
 
 <style>
 workoutLog {
   background-color: rgb(228, 234, 238);
-  height: 50vh;
-  width: 33vw;
-  max-width: 100%;
-  max-height: 100%;
-  border: rgb(52, 76, 98);
-  border-width: 1.5px;
-  border-style: solid;
-  padding: 10px;
-  margin: 10px;
-  position: relative;
-  border-radius: 16px;
-  overflow:auto;
+    height: 50vh;
+    width: 33vw;
+    max-width: 100%;
+    max-height: 100%;
+    border: rgb(52, 76, 98);
+    border-width: 1.5px;
+    border-style: solid;
+    border-radius: 16px;
+    display:flex;
+    flex-direction: column;
+    padding: 10px;
+    margin: 10px;
 }
 
 .dropdown_spacing {
@@ -368,4 +379,25 @@ workoutLog {
 .checkbox_spacing input[type="checkbox"] {
   margin-left: 10px; /* Adjust the spacing as needed */
 }
+
+.workoutLogContent {
+    display:flex;
+    justify-content: space-between;
+    overflow: hidden;
+    height: 100%;
+}
+
+  .workoutLogLeft {
+    overflow: auto;
+    width: 100%;
+    scrollbar-width: none;
+  }
+
+  .workoutLogRight {
+    width: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
 </style>
