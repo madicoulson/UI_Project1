@@ -317,7 +317,7 @@
                   Weight (lbs): <input type="number" class="number_box" bind:value={weightVal} min="0" max="1000" />
                 </label>
                 <br>
-                <button class="general_button" on:click={()=>addLiftData()}>Add</button>
+                <button class="component_button_general" on:click={()=>addLiftData()}>Add</button>
             </div>
           {/if}
 
@@ -422,6 +422,18 @@
     top: 10px;
     right: 10px;
     position: absolute;
+  }
+
+  /*Component general button style defintion**/
+  .component_button_general {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 14px;
+    padding: 3px 6px 3px 6px;
+    margin-top: 10px;
+    background-color:rgb(52, 76, 98);
+    color: white;
+    border-radius: 16px;
+    width:fit-content;
   }
 
   /*Drop down style defintion**/
