@@ -308,7 +308,7 @@
           <!-- If the type is weight lifting, drop down lift input. -->
           {#if isWeightLift}
             <div class=dropdown_spacing>
-                <p class="component_subheader"> Enter your lift, and press submit to add it. You can add as many lifts as you like. </p>
+                <p class="component_subheader"> Enter your lift, and press add to save it. You can add as many lifts as you like. </p>
                 <label class="component_text">
                   Exercise: <input type="text" bind:value={exerciseName}>
                   <br>
