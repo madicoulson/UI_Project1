@@ -1,9 +1,11 @@
-<div class="row">
-    <slot />
-</div>
+<row>
+  <!-- Slot input for components to be inserted within rows. -->
+  <slot />
+</row>
 
 <style>
-.row {
-  display: flex;
-}
+  /*row component style defintion**/
+  row {
+    display: flex;
+  }
 </style>
