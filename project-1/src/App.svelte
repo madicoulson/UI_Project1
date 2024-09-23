@@ -1,10 +1,4 @@
 <script>
-  // https://svelte.dev/examples/area-chart
-  // https://dev.to/wesleymutwiri/create-beautiful-charts-with-svelte-and-chart-js-512n
-  // https://www.chartjs.org/docs/latest/samples/other-charts/pie.html
-  // https://www.w3schools.com/ai/ai_chartjs.asp
-  // https://www.educative.io/answers/how-to-create-charts-with-svelte-and-chartjs
-
   import Header from './lib/Header.svelte'
   import Row from './lib/Row.svelte';
   import Subheader from './lib/Subheader.svelte';
@@ -14,7 +8,6 @@
   import StatTracker from './lib/StatTracker.svelte';
   import WorkoutTracker from './lib/WorkoutTracker.svelte';
   import WaterLog from './lib/WaterLogger.svelte';
-
 </script>
 
 <main>
@@ -22,7 +15,6 @@
 
   <Subheader subheader="DAILY TRACKING"></Subheader>
   
-
   <Row>
     <WorkoutLog></WorkoutLog>
     <WaterLog></WaterLog>
